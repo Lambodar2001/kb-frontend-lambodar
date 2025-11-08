@@ -144,6 +144,7 @@ function shouldHideTabBar(state: BottomTabBarProps['state']) {
     'SellMobileStack',
     'SellLaptopStack',
     'ProductDetails',
+    'ProductDetailsScreen',
     'LaptopDetails',
     'UpdateLaptop',
     'UpdateMobile',
@@ -155,18 +156,28 @@ function shouldHideTabBar(state: BottomTabBarProps['state']) {
 
 function collectRouteNames(route: any) {
   const names: string[] = [];
-  let current = route;
+  let current: any | undefined = route;
 
   while (current) {
     if (typeof current.name === 'string') {
       names.push(current.name);
     }
 
-    if (!current.state || typeof current.state.index !== 'number') {
-      break;
+    if (current.state && typeof current.state.index === 'number') {
+      current = current.state.routes?.[current.state.index];
+      continue;
     }
 
-    current = current.state.routes?.[current.state.index];
+    const nestedScreen = current.params?.screen;
+    if (typeof nestedScreen === 'string') {
+      current = {
+        name: nestedScreen,
+        params: current.params?.params,
+      };
+      continue;
+    }
+
+    break;
   }
 
   return names;
