@@ -35,9 +35,31 @@ export default function BottomTabNavigator() {
         name="MyAds"
         component={MyAdsEntryStack}
         options={({ route }) => {
+          // Helper function to check if we're deeply nested
+          const isNestedScreen = (routeState: any): boolean => {
+            if (!routeState) return false;
+
+            const currentRoute = routeState.routes?.[routeState.index];
+            if (!currentRoute) return false;
+
+            // If the current route name is not 'MyAdsScreen', we're in a nested stack
+            if (currentRoute.name !== 'MyAdsScreen') return true;
+
+            // Check if there's further nesting
+            if (currentRoute.state) {
+              return isNestedScreen(currentRoute.state);
+            }
+
+            return false;
+          };
+
           const routeName = getFocusedRouteNameFromRoute(route);
-          // Hide tab bar when on nested stacks (not on MyAdsScreen)
-          const shouldHideTabBar = routeName && routeName !== 'MyAdsScreen';
+          const isNested = isNestedScreen(route.state);
+
+          // Hide tab bar if we're on any screen other than MyAdsScreen
+          // This will catch UpdateCar, UpdateBike, UpdateMobile, UpdateLaptop, etc.
+          const shouldHideTabBar = isNested || (routeName && routeName !== 'MyAdsScreen');
+
           return {
             title: 'My Ads',
             tabBarStyle: shouldHideTabBar ? { display: 'none' } : undefined,

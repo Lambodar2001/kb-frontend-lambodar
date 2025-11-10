@@ -28,6 +28,28 @@ export default function MyLaptopAdsStack() {
       <Stack.Screen
         name="UpdateLaptop"
         component={UpdateLaptopScreen}
+        options={{
+          presentation: 'card',
+        }}
+        listeners={({ navigation }) => ({
+          focus: () => {
+            // Go up to the tab navigator (3 levels up)
+            const tabNavigator = navigation.getParent()?.getParent()?.getParent();
+            if (tabNavigator) {
+              tabNavigator.setOptions({
+                tabBarStyle: { display: 'none' },
+              });
+            }
+          },
+          blur: () => {
+            const tabNavigator = navigation.getParent()?.getParent()?.getParent();
+            if (tabNavigator) {
+              tabNavigator.setOptions({
+                tabBarStyle: undefined,
+              });
+            }
+          },
+        })}
       />
     </Stack.Navigator>
   );

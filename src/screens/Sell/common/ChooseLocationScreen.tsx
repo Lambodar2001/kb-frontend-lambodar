@@ -13,9 +13,18 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 
 import { colors, radii, shadows, spacing } from '../../../theme/tokens';
-import { SellCarStackParamList } from '../../../navigation/SellCarStack';
 
-type ChooseLocationRouteProp = RouteProp<SellCarStackParamList, 'ChooseLocationScreen'>;
+// Generic route params for all entity types
+type ChooseLocationRouteParams = {
+  returnScreen: string;
+  carId?: number;
+  bikeId?: number;
+  mobileId?: number;
+  laptopId?: number;
+  images?: string[];
+};
+
+type ChooseLocationRouteProp = RouteProp<{ ChooseLocationScreen: ChooseLocationRouteParams }, 'ChooseLocationScreen'>;
 
 const INDIAN_STATES = [
   'Andhra Pradesh',
@@ -51,7 +60,7 @@ const INDIAN_STATES = [
 const ChooseLocationScreen: React.FC = () => {
   const navigation = useNavigation();
   const route = useRoute<ChooseLocationRouteProp>();
-  const { carId, images } = route.params;
+  const { carId, bikeId, mobileId, laptopId, images } = route.params;
 
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredStates, setFilteredStates] = useState(INDIAN_STATES);
@@ -98,8 +107,11 @@ const ChooseLocationScreen: React.FC = () => {
       navigation.navigate('ChooseCityScreen', {
         stateName: state,
         carId,
-        images
-      });
+        bikeId,
+        mobileId,
+        laptopId,
+        images,
+      } as any);
     } else {
       console.log('Selected state:', state);
     }

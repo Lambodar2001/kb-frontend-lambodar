@@ -110,14 +110,14 @@ const SelectMobilePhotoScreen: React.FC = () => {
             {
               text: 'Continue Anyway',
               onPress: () =>
-                navigation.navigate('ConfirmDetails', { mobileId, images: uploadedUrls }),
+                navigation.navigate('MobilePricingScreen', { mobileId, images: uploadedUrls }),
             },
             { text: 'Retry Failed', style: 'cancel' },
           ],
         );
       } else {
         Alert.alert('Success', `All ${successCount} images uploaded successfully!`);
-        navigation.navigate('ConfirmDetails', { mobileId, images: uploadedUrls });
+        navigation.navigate('MobilePricingScreen', { mobileId, images: uploadedUrls });
       }
     } catch (error: any) {
       console.error('[UPLOAD FAILED]', error?.response?.data || error?.message || error);

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, Alert, Text, TouchableOpacity } from 'react-native';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -78,6 +78,42 @@ const UpdateCarScreen: React.FC = () => {
 
   const [saving, setSaving] = useState(false);
   const [ownerSellerId, setOwnerSellerId] = useState<number | null>(null);
+
+  // Hide tab bar when this screen is focused
+  useLayoutEffect(() => {
+    // Navigate up to find the tab navigator
+    let currentNav = navigation.getParent();
+    let tabNavigator = null;
+
+    // Go up the navigation tree to find the tab navigator
+    while (currentNav) {
+      // Check if this navigator has a tabBarStyle option (indicates it's a tab navigator)
+      if (currentNav.getId()?.includes('Tab') || currentNav.getState()?.type === 'tab') {
+        tabNavigator = currentNav;
+        break;
+      }
+      currentNav = currentNav.getParent();
+    }
+
+    // If we can't find it by type, just go up 3 levels
+    if (!tabNavigator) {
+      tabNavigator = navigation.getParent()?.getParent()?.getParent();
+    }
+
+    if (tabNavigator) {
+      tabNavigator.setOptions({
+        tabBarStyle: { display: 'none' },
+      });
+    }
+
+    return () => {
+      if (tabNavigator) {
+        tabNavigator.setOptions({
+          tabBarStyle: undefined,
+        });
+      }
+    };
+  }, [navigation]);
 
   const yearOptions = useMemo(() => buildCarYearOptions(), []);
 

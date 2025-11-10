@@ -110,14 +110,14 @@ const SelectBikePhotoScreen: React.FC = () => {
             {
               text: 'Continue Anyway',
               onPress: () =>
-                navigation.navigate('ConfirmDetails', { bikeId, images: uploadedUrls }),
+                navigation.navigate('BikePricingScreen', { bikeId, images: uploadedUrls }),
             },
             { text: 'Retry Failed', style: 'cancel' },
           ],
         );
       } else {
         Alert.alert('Success', `All ${successCount} images uploaded successfully!`);
-        navigation.navigate('ConfirmDetails', { bikeId, images: uploadedUrls });
+        navigation.navigate('BikePricingScreen', { bikeId, images: uploadedUrls });
       }
     } catch (error: any) {
       console.error('[UPLOAD FAILED]', error?.response?.data || error?.message || error);

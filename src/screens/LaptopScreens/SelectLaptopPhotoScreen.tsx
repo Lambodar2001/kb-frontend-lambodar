@@ -96,20 +96,21 @@ const SelectLaptopPhotoScreen: React.FC = () => {
         throw new Error(firstError);
       }
 
-      const navigateToConfirm = () => navigation.replace('ConfirmLaptopDetails', { laptopId });
+      const navigateToNext = () =>
+        navigation.replace('LaptopPricingScreen', { laptopId, images: uploadedUrls });
 
       if (failCount > 0) {
         showAlert(
           'Partial Success',
           `${successCount} of ${total} images uploaded successfully.\n${failCount} failed.`,
           [
-            { text: 'Continue Anyway', onPress: navigateToConfirm },
+            { text: 'Continue Anyway', onPress: navigateToNext },
             { text: 'Retry Failed', style: 'cancel' },
           ],
         );
       } else {
         showAlert('Success', `All ${successCount} images uploaded successfully!`);
-        navigateToConfirm();
+        navigateToNext();
       }
     } catch (error: any) {
       console.error('[LAPTOP PHOTO UPLOAD ERROR]', error?.response?.data || error?.message || error);

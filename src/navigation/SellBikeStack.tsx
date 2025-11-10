@@ -4,11 +4,21 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 // Screens
 import AddBikeDetailsScreen from '../screens/BikeScreens/AddBikeDetailsScreen';
 import SelectBikePhotoScreen from '../screens/BikeScreens/SelectBikePhotoScreen';
+import BikePricingScreen from '../screens/BikeScreens/BikePricingScreen';
+import BikeLocationScreen from '../screens/BikeScreens/BikeLocationScreen';
+import ChooseLocationScreen from '../screens/Sell/common/ChooseLocationScreen';
+import ChooseCityScreen from '../screens/Sell/common/ChooseCityScreen';
+import ChooseAreaScreen from '../screens/Sell/common/ChooseAreaScreen';
 import ConfirmDetailsScreen from '../screens/BikeScreens/ConfirmDetailsScreen';
 
 export type SellBikeStackParamList = {
   AddBikeDetails: undefined;
   SelectPhoto: { bikeId: number };
+  BikePricingScreen: { bikeId: number; images?: string[] };
+  BikeLocationScreen: { bikeId: number; images?: string[]; selectedLocation?: string };
+  ChooseLocationScreen: { returnScreen: string; bikeId: number; images?: string[] };
+  ChooseCityScreen: { stateName: string; bikeId: number; images?: string[] };
+  ChooseAreaScreen: { cityName: string; bikeId: number; images?: string[] };
   ConfirmDetails: { bikeId: number; images?: string[] };
 };
 
@@ -22,6 +32,11 @@ const SellBikeStack: React.FC = () => {
     >
       <Stack.Screen name="AddBikeDetails" component={AddBikeDetailsScreen} />
       <Stack.Screen name="SelectPhoto" component={SelectBikePhotoScreen} />
+      <Stack.Screen name="BikePricingScreen" component={BikePricingScreen} />
+      <Stack.Screen name="BikeLocationScreen" component={BikeLocationScreen} />
+      <Stack.Screen name="ChooseLocationScreen" component={ChooseLocationScreen} />
+      <Stack.Screen name="ChooseCityScreen" component={ChooseCityScreen} />
+      <Stack.Screen name="ChooseAreaScreen" component={ChooseAreaScreen} />
       <Stack.Screen name="ConfirmDetails" component={ConfirmDetailsScreen} />
     </Stack.Navigator>
   );

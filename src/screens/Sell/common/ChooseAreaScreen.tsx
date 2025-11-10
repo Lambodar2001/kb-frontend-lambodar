@@ -12,7 +12,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 
 import { colors, radii, spacing } from '../../../theme/tokens';
-import { SellCarStackParamList } from '../../../navigation/SellCarStack';
 
 const PANDHARPUR_AREAS = [
   'Vitthal Mandir Area',
@@ -22,12 +21,22 @@ const PANDHARPUR_AREAS = [
   'Bhima River Side',
 ];
 
-type ChooseAreaRouteProp = RouteProp<SellCarStackParamList, 'ChooseAreaScreen'>;
+// Generic route params for all entity types
+type ChooseAreaRouteParams = {
+  cityName: string;
+  carId?: number;
+  bikeId?: number;
+  mobileId?: number;
+  laptopId?: number;
+  images?: string[];
+};
+
+type ChooseAreaRouteProp = RouteProp<{ ChooseAreaScreen: ChooseAreaRouteParams }, 'ChooseAreaScreen'>;
 
 const ChooseAreaScreen: React.FC = () => {
   const navigation = useNavigation();
   const route = useRoute<ChooseAreaRouteProp>();
-  const { cityName, carId, images } = route.params;
+  const { cityName, carId, bikeId, mobileId, laptopId, images } = route.params;
 
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredAreas, setFilteredAreas] = useState(PANDHARPUR_AREAS);
@@ -52,12 +61,29 @@ const ChooseAreaScreen: React.FC = () => {
     const fullLocation = `${area}, ${cityName}, Maharashtra`;
     console.log('Selected location:', fullLocation);
 
-    // Navigate back to CarLocationScreen with selected location
-    navigation.navigate('CarLocationScreen', {
-      carId,
-      images,
-      selectedLocation: fullLocation
-    });
+    // Determine which location screen to navigate to based on entity type
+    let screenName: string;
+    let params: any;
+
+    if (carId) {
+      screenName = 'CarLocationScreen';
+      params = { carId, images, selectedLocation: fullLocation };
+    } else if (bikeId) {
+      screenName = 'BikeLocationScreen';
+      params = { bikeId, images, selectedLocation: fullLocation };
+    } else if (mobileId) {
+      screenName = 'MobileLocationScreen';
+      params = { mobileId, images, selectedLocation: fullLocation };
+    } else if (laptopId) {
+      screenName = 'LaptopLocationScreen';
+      params = { laptopId, images, selectedLocation: fullLocation };
+    } else {
+      console.error('No entity ID provided');
+      return;
+    }
+
+    // Navigate back to the appropriate location screen
+    navigation.navigate(screenName as any, params);
   };
 
   return (
