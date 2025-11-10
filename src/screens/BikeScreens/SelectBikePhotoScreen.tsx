@@ -6,7 +6,6 @@ import { Asset, launchCamera, launchImageLibrary } from 'react-native-image-pick
 
 import PhotoUploadLayout, {
   PhotoUploadProgressState,
-  PhotoUploadStep,
 } from '../../components/photoUpload/PhotoUploadLayout';
 import { useSafeAsyncState } from '../../hooks/useSafeAsyncState';
 import { SellBikeStackParamList } from '../../navigation/SellBikeStack';
@@ -15,12 +14,6 @@ import { uploadBikeImages } from '../../api/BikesApi';
 
 type SelectPhotoNavProp = NativeStackNavigationProp<SellBikeStackParamList, 'SelectPhoto'>;
 type RouteProps = RouteProp<SellBikeStackParamList, 'SelectPhoto'>;
-
-const STEPS: PhotoUploadStep[] = [
-  { label: 'Details', state: 'complete', stepNumber: 1 },
-  { label: 'Photos', state: 'active', stepNumber: 2 },
-  { label: 'Confirm', state: 'upcoming', stepNumber: 3 },
-];
 
 const PROGRESS_HINT = 'Please wait...';
 
@@ -182,7 +175,6 @@ const SelectBikePhotoScreen: React.FC = () => {
       title="Upload Photos"
       onBackPress={() => navigation.goBack()}
       backDisabled={uploading}
-      steps={STEPS}
       actions={[
         { label: 'Take Photo', iconName: 'camera', onPress: handleTakePhoto },
         { label: 'Pick Gallery', iconName: 'folder', onPress: handlePickGallery },

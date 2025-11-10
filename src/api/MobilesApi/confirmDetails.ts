@@ -1,19 +1,8 @@
-import client from "../client";
+import client from '../client';
 
 export type ConfirmDetailsDTO = {
-  price: string;
   name: string;
   phoneNumber: string;
-};
-
-type MobileDetail = {
-  mobileId: number;
-  price: number;
-  title?: string;
-  brand?: string;
-  model?: string;
-  yearOfPurchase?: number;
-  sellerId?: number;
 };
 
 type SellerByUser = {
@@ -29,30 +18,25 @@ type SellerByUser = {
   };
 };
 
-/**
- * Fetches price from /mobiles/{mobileId} and
- * name/phone from /sellers/{userId}, then returns a merged DTO for the Confirm screen.
- */
+const toStringOrEmpty = (value: unknown): string => {
+  if (value == null) return '';
+  const text = String(value).trim();
+  return text.length > 0 ? text : '';
+};
+
 export async function getConfirmDetailsCombined(args: {
   mobileId: number;
   userId: number;
 }): Promise<ConfirmDetailsDTO> {
-  const { mobileId, userId } = args;
+  const { userId } = args;
 
-  const [mobileRes, sellerRes] = await Promise.all([
-    client.get<MobileDetail>(`/api/v1/mobiles/${mobileId}`),
-    client.get<SellerByUser>(`/api/v1/sellers/${userId}`),
-  ]);
-
-  const mobile = mobileRes.data;
+  const sellerRes = await client.get<SellerByUser>(`/api/v1/sellers/${userId}`);
   const seller = sellerRes.data;
 
-  const price = mobile?.price != null ? String(mobile.price) : "";
-  const first = seller?.user?.firstName ?? "";
-  const last = seller?.user?.lastName ?? "";
+  const first = toStringOrEmpty(seller?.user?.firstName);
+  const last = toStringOrEmpty(seller?.user?.lastName);
   const name = `${first} ${last}`.trim();
-  const phoneNumber =
-    seller?.user?.mobileNumber != null ? String(seller.user.mobileNumber) : "";
+  const phoneNumber = toStringOrEmpty(seller?.user?.mobileNumber);
 
-  return { price, name, phoneNumber };
+  return { name, phoneNumber };
 }

@@ -8,7 +8,6 @@ import ConfirmContactForm, {
 } from '../../components/sell/ConfirmContactForm';
 import PrimaryButton from '../../components/common/PrimaryButton';
 import SellFlowLayout from '../Sell/common/SellFlowLayout';
-import { buildSellFlowSteps } from '../Sell/common/steps';
 import { useSafeAsyncState } from '../../hooks/useSafeAsyncState';
 import { useAuth } from '../../context/AuthContext';
 import { getConfirmDetailsCombined, type ConfirmDetailsDTO } from '../../api/BikesApi';
@@ -20,9 +19,6 @@ type ConfirmDetailsScreenNavigationProp = NativeStackNavigationProp<
 >;
 type RouteProps = RouteProp<SellBikeStackParamList, 'ConfirmDetails'>;
 
-const CONFIRM_STEPS = buildSellFlowSteps(2);
-const PRICE_PLACEHOLDER = 'e.g., Rs 78000';
-
 const ConfirmDetailsScreen: React.FC = () => {
   const navigation = useNavigation<ConfirmDetailsScreenNavigationProp>();
   const route = useRoute<RouteProps>();
@@ -31,7 +27,6 @@ const ConfirmDetailsScreen: React.FC = () => {
   const { userId } = useAuth();
   const [loading, setLoading] = useSafeAsyncState(true);
   const [formData, setFormData] = useSafeAsyncState<ConfirmDetailsDTO>({
-    price: '',
     name: '',
     phoneNumber: '',
   });
@@ -84,7 +79,6 @@ const ConfirmDetailsScreen: React.FC = () => {
     <SellFlowLayout
       title="Confirm Details"
       onBack={() => navigation.goBack()}
-      steps={CONFIRM_STEPS}
       footer={
         <PrimaryButton label="Post Now" onPress={handlePostNow} loading={loading} />
       }
@@ -93,7 +87,6 @@ const ConfirmDetailsScreen: React.FC = () => {
         values={formData}
         onChange={handleInputChange}
         editable={!loading}
-        pricePlaceholder={PRICE_PLACEHOLDER}
       />
     </SellFlowLayout>
   );

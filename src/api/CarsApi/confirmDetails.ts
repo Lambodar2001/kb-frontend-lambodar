@@ -35,18 +35,11 @@ export async function getConfirmDetailsCombined(args: {
   carId: number;
   userId: number;
 }): Promise<CarConfirmDetailsDTO> {
-  const { carId, userId } = args;
+  const { userId } = args;
 
-  const [carRes, sellerRes] = await Promise.all([
-    client.get<CarDetail>(`/api/v1/cars/${carId}`),
-    client.get<SellerByUser>(`/api/v1/sellers/${userId}`),
-  ]);
+  const sellerRes = await client.get<SellerByUser>(`/api/v1/sellers/${userId}`);
 
-  const car = carRes.data;
   const seller = sellerRes.data;
-
-  const price =
-    car?.price != null && Number.isFinite(Number(car.price)) ? String(car.price) : '';
 
   const first = toStringOrEmpty(seller?.user?.firstName);
   const last = toStringOrEmpty(seller?.user?.lastName);
@@ -55,7 +48,6 @@ export async function getConfirmDetailsCombined(args: {
   const phoneNumber = toStringOrEmpty(seller?.user?.mobileNumber);
 
   return {
-    price,
     name,
     phoneNumber,
   };

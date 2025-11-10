@@ -1,17 +1,8 @@
-import client from "../client";
+import client from '../client';
 
 export type LaptopConfirmDetailsDTO = {
-  price: string;
   name: string;
   phoneNumber: string;
-};
-
-type LaptopDetail = {
-  laptopId: number;
-  price: number;
-  brand?: string;
-  model?: string;
-  sellerId?: number;
 };
 
 type SellerByUser = {
@@ -27,30 +18,25 @@ type SellerByUser = {
   };
 };
 
-/**
- * Fetches price from /api/laptops/getById?laptop_id=...
- * and name/phone from /api/v1/sellers/{userId}, then returns a merged DTO.
- */
+const toStringOrEmpty = (value: unknown): string => {
+  if (value == null) return '';
+  const text = String(value).trim();
+  return text.length > 0 ? text : '';
+};
+
 export async function getLaptopConfirmDetailsCombined(args: {
   laptopId: number;
   userId: number;
 }): Promise<LaptopConfirmDetailsDTO> {
-  const { laptopId, userId } = args;
+  const { userId } = args;
 
-  const [laptopRes, sellerRes] = await Promise.all([
-    client.get<LaptopDetail>("/api/laptops/getById", { params: { laptop_id: laptopId } }),
-    client.get<SellerByUser>(`/api/v1/sellers/${userId}`),
-  ]);
-
-  const laptop = laptopRes.data;
+  const sellerRes = await client.get<SellerByUser>(`/api/v1/sellers/${userId}`);
   const seller = sellerRes.data;
 
-  const price = laptop?.price != null ? String(laptop.price) : "";
-  const first = seller?.user?.firstName ?? "";
-  const last = seller?.user?.lastName ?? "";
+  const first = toStringOrEmpty(seller?.user?.firstName);
+  const last = toStringOrEmpty(seller?.user?.lastName);
   const name = `${first} ${last}`.trim();
-  const phoneNumber =
-    seller?.user?.mobileNumber != null ? String(seller.user.mobileNumber) : "";
+  const phoneNumber = toStringOrEmpty(seller?.user?.mobileNumber);
 
-  return { price, name, phoneNumber };
+  return { name, phoneNumber };
 }

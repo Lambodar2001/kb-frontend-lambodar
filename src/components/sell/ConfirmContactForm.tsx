@@ -5,7 +5,6 @@ import TextField from '../form/TextField';
 import { spacing } from '../../theme/tokens';
 
 export type ConfirmContactFormValues = {
-  price: string;
   name: string;
   phoneNumber: string;
 };
@@ -17,7 +16,6 @@ type ConfirmContactFormProps<TValues extends ConfirmContactFormValues> = {
     value: TValues[TKey],
   ) => void;
   editable?: boolean;
-  pricePlaceholder: string;
   phonePlaceholder?: string;
 };
 
@@ -25,20 +23,10 @@ const ConfirmContactForm = <TValues extends ConfirmContactFormValues>({
   values,
   onChange,
   editable = true,
-  pricePlaceholder,
   phonePlaceholder = 'Your mobile number',
 }: ConfirmContactFormProps<TValues>) => {
   return (
     <View>
-      <TextField
-        label="Price"
-        keyboardType="numeric"
-        placeholder={pricePlaceholder}
-        value={values.price}
-        onChangeText={(text) => onChange('price', text)}
-        editable={editable}
-        containerStyle={styles.field}
-      />
       <TextField
         label="Name"
         placeholder="Your name"

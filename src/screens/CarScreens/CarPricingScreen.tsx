@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Alert, StyleSheet, Text, TextInput, View } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { Alert, StyleSheet, Text, TextInput, View, ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -9,6 +9,7 @@ import PrimaryButton from '../../components/common/PrimaryButton';
 import FormField from '../../components/form/FormField';
 import { colors, radii, shadows, spacing } from '../../theme/tokens';
 import { CarStackParamList } from '../../navigation/CarStack';
+import { getCarById } from '../../api/CarsApi';
 
 type CarPricingNavProp = NativeStackNavigationProp<CarStackParamList, 'CarPricingScreen'>;
 type CarPricingRouteProp = RouteProp<CarStackParamList, 'CarPricingScreen'>;
@@ -36,6 +37,35 @@ const CarPricingScreen: React.FC = () => {
   const { carId, images } = route.params;
 
   const [price, setPrice] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Fetch car price on component mount
+  useEffect(() => {
+    const fetchCarPrice = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const carData = await getCarById(carId);
+
+        if (carData.price != null) {
+          setPrice(String(carData.price));
+        } else {
+          setError('Price not found for this car');
+        }
+      } catch (err: any) {
+        const errorMessage = err?.response?.data?.message || err?.message || 'Failed to fetch car price';
+        setError(errorMessage);
+        Alert.alert('Error', errorMessage);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (carId) {
+      fetchCarPrice();
+    }
+  }, [carId]);
 
   const handlePriceChange = (value: string) => {
     const sanitized = value.replace(/[^0-9]/g, '');
@@ -57,30 +87,34 @@ const CarPricingScreen: React.FC = () => {
 
   return (
     <SellFlowLayout
-      title="Set Car Price"
+      title="Car Price"
       onBack={handleBack}
       footer={
         <PrimaryButton
           label="Next"
           onPress={handleSavePrice}
-          disabled={!price}
+          disabled={!price || loading}
+          loading={loading}
         />
       }
     >
-      <FormField label="Listing Price" required>
+      <FormField label="Current Listing Price" required>
         <View style={styles.priceInputContainer}>
           <View style={styles.currencyChip}>
             <Icon name="currency-inr" size={18} color={colors.white} />
           </View>
-          <TextInput
-            value={price}
-            onChangeText={handlePriceChange}
-            placeholder="Enter amount"
-            placeholderTextColor={colors.textMuted}
-            keyboardType="numeric"
-            maxLength={8}
-            style={styles.priceInput}
-          />
+          {loading ? (
+            <View style={styles.loadingContainer}>
+              <ActivityIndicator size="small" color={colors.primary} />
+              <Text style={styles.loadingText}>Fetching price...</Text>
+            </View>
+          ) : error ? (
+            <Text style={styles.errorText}>{error}</Text>
+          ) : (
+            <Text style={styles.priceDisplay}>
+              {price ? formatINR(price) : 'No price set'}
+            </Text>
+          )}
         </View>
       </FormField>
 
@@ -122,12 +156,32 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginRight: spacing.sm,        // was spacing.md
   },
-  // slightly smaller text for compact look
-  priceInput: {
+  // Read-only price display
+  priceDisplay: {
     flex: 1,
-    fontSize: 18,                   // was 20
+    fontSize: 18,
     fontWeight: '600',
     color: colors.text,
+    paddingVertical: 4,
+  },
+  // Loading container
+  loadingContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+  },
+  loadingText: {
+    fontSize: 14,
+    color: colors.textMuted,
+    fontWeight: '500',
+  },
+  // Error text
+  errorText: {
+    flex: 1,
+    fontSize: 14,
+    color: colors.error || '#dc2626',
+    fontWeight: '500',
   },
   // tighter: less top margin & padding
   tipsCard: {

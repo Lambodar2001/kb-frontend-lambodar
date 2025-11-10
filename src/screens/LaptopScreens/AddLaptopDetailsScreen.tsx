@@ -9,7 +9,6 @@ import SellFlowLayout from '../Sell/common/SellFlowLayout';
 import PrimaryButton from '../../components/common/PrimaryButton';
 import TextField from '../../components/form/TextField';
 import DropdownField, { DropdownOption } from '../../components/form/DropdownField';
-import { StepConfig } from '../../components/common/ProgressStepper';
 import { colors, spacing } from '../../theme/tokens';
 import { useFormState } from '../../form/hooks/useFormState';
 import {
@@ -27,12 +26,6 @@ import { SellLaptopStackParamList } from '../../navigation/SellLaptopStack';
 import getFriendlyApiError from '../../utils/getFriendlyApiError';
 
 type AddLaptopNav = NativeStackNavigationProp<SellLaptopStackParamList, 'AddLaptopDetails'>;
-
-const SELL_FLOW_STEPS: StepConfig[] = [
-  { label: 'Details', status: 'current' },
-  { label: 'Photos', status: 'upcoming' },
-  { label: 'Confirm', status: 'upcoming' },
-];
 
 const AddLaptopDetailsScreen: React.FC = () => {
   const navigation = useNavigation<AddLaptopNav>();
@@ -150,7 +143,6 @@ const AddLaptopDetailsScreen: React.FC = () => {
     <SellFlowLayout
       title="Laptop Details"
       onBack={() => navigation.goBack()}
-      steps={SELL_FLOW_STEPS}
       footer={
         <PrimaryButton
           label="Next"

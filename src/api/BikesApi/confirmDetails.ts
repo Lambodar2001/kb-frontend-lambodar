@@ -1,6 +1,5 @@
 import client from '../client';
 import { ConfirmContactFormValues } from '../../components/sell/ConfirmContactForm';
-import { BikeDetail } from './getById';
 
 type SellerByUser = {
   sellerId: number;
@@ -25,27 +24,15 @@ const toStringOrEmpty = (value: unknown): string => {
 
 export type ConfirmDetailsDTO = ConfirmContactFormValues;
 
-/**
- * Fetches prize from /bikes/get/{bikeId} and
- * name/phone from /api/v1/sellers/{userId}, then returns a merged DTO for the Confirm screen.
- */
 export async function getConfirmDetailsCombined(args: {
   bikeId: number;
   userId: number;
 }): Promise<ConfirmDetailsDTO> {
-  const { bikeId, userId } = args;
+  const { userId } = args;
 
-  const [bikeRes, sellerRes] = await Promise.all([
-    client.get<BikeDetail>(`/bikes/get/${bikeId}`),
-    client.get<SellerByUser>(`/api/v1/sellers/${userId}`),
-  ]);
+  const sellerRes = await client.get<SellerByUser>(`/api/v1/sellers/${userId}`);
 
-  const bike = bikeRes.data;
   const seller = sellerRes.data;
-
-  // Backend uses 'prize' field for bikes
-  const price =
-    bike?.prize != null && Number.isFinite(Number(bike.prize)) ? String(bike.prize) : '';
 
   const first = toStringOrEmpty(seller?.user?.firstName);
   const last = toStringOrEmpty(seller?.user?.lastName);
@@ -54,7 +41,6 @@ export async function getConfirmDetailsCombined(args: {
   const phoneNumber = toStringOrEmpty(seller?.user?.mobileNumber);
 
   return {
-    price,
     name,
     phoneNumber,
   };

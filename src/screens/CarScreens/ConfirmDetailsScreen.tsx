@@ -16,7 +16,6 @@ import { SellCarStackParamList } from '../../navigation/SellCarStack';
 
 type ConfirmRoute = RouteProp<SellCarStackParamList, 'ConfirmDetails'>;
 type ConfirmNav = NativeStackNavigationProp<SellCarStackParamList, 'ConfirmDetails'>;
-const PRICE_PLACEHOLDER = 'e.g., Rs 950000';
 
 const ConfirmDetailsScreen: React.FC = () => {
   const navigation = useNavigation<ConfirmNav>();
@@ -26,7 +25,6 @@ const ConfirmDetailsScreen: React.FC = () => {
   const { userId } = useAuth();
   const [loading, setLoading] = useSafeAsyncState(true);
   const [formData, setFormData] = useSafeAsyncState<CarConfirmDetailsDTO>({
-    price: '',
     name: '',
     phoneNumber: '',
   });
@@ -85,7 +83,6 @@ const ConfirmDetailsScreen: React.FC = () => {
         values={formData}
         onChange={handleChange}
         editable={!loading}
-        pricePlaceholder={PRICE_PLACEHOLDER}
       />
     </SellFlowLayout>
   );
