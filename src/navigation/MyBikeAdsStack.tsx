@@ -10,7 +10,6 @@ export type MyBikeAdsStackParamList = {
   MyBikeAdsList: undefined;
   ProductDetails: { bikeId: number };
   UpdateBike: { bikeId: number };
-  ChatScreen: undefined;
 };
 
 const Stack = createNativeStackNavigator<MyBikeAdsStackParamList>();

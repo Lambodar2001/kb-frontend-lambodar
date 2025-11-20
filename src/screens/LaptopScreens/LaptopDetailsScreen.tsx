@@ -218,7 +218,7 @@ const LaptopDetailsScreen: React.FC = () => {
       />
 
       <BottomActionBar
-        onChat={() => navigation.navigate('ChatScreen')}
+        onChat={() => Alert.alert('Coming Soon', 'Chat feature will be available soon.')}
         onBid={() => console.log('Start Bidding')}
       />
 

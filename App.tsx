@@ -8,9 +8,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import LoginScreen from './src/screens/LoginScreen';
 import SignupScreen from './src/screens/SignupScreen';
 import HomeScreen from './src/screens/HomeScreen';
-import CarListScreen from './src/screens/CarListScreen';
 import ProductDetailsScreen from './src/screens/MobileScreens/ProductDetailsScreen';
-import ChatScreen from './src/screens/ChatScreen';
 import LiveBiddingScreen from './src/screens/LiveBiddingScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
 
@@ -28,14 +26,11 @@ const AuthStack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 const HomeStackNav = createNativeStackNavigator();
 
-// ✅ Home tab uses its own stack (keeps your original Home → CarList → ProductDetails → Chat flow)
 function HomeStack() {
   return (
     <HomeStackNav.Navigator screenOptions={{ headerShown: false }}>
       <HomeStackNav.Screen name="HomeScreen" component={HomeScreen} />
-      <HomeStackNav.Screen name="CarListScreen" component={CarListScreen} />
       <HomeStackNav.Screen name="ProductDetailsScreen" component={ProductDetailsScreen} />
-      <HomeStackNav.Screen name="ChatScreen" component={ChatScreen} />
     </HomeStackNav.Navigator>
   );
 }

@@ -11,12 +11,6 @@ import {
   Alert,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { MyAdsStackParamList } from '../navigation/MyAdsStack';
-
-// Define navigation type
-type HomeScreenNavigationProp = NativeStackNavigationProp<MyAdsStackParamList, 'HomeScreen'>;
 
 const categories = [
   { id: '1', name: 'Vehicle', icon: require('../assets/icons/vehicle.png'), bgColor: '#FFF4CC' },
@@ -65,15 +59,8 @@ const products = [
 ];
 
 const HomeScreen = () => {
-  const navigation = useNavigation<HomeScreenNavigationProp>();
-
   const handleCategoryPress = (name: string) => {
-    if (name === 'Vehicle') {
-      // The screen name 'CarList' must match the name in MyAdsStack.tsx
-      navigation.navigate('CarListScreen', { category: 'Vehicle' });
-    } else {
-      Alert.alert('Coming Soon', `You selected: ${name}`);
-    }
+    Alert.alert('Coming Soon', `You selected: ${name}`);
   };
 
   return (
