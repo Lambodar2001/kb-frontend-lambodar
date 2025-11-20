@@ -55,11 +55,22 @@ export type PageResponse<T> = {
   empty?: boolean;
 };
 
-export async function getAllCars(params?: { page?: number; size?: number; sort?: string }) {
-  const { page = 0, size = 20, sort = 'createdAt,DESC' } = params || {};
+export async function getAllCars(params?: { page?: number; size?: number; sort?: string; sellerId?: number }) {
+  const { page = 0, size = 20, sort = 'createdAt,DESC', sellerId } = params || {};
+  const queryParams: { page: number; size: number; sort: string; sellerId?: number } = {
+    page,
+    size,
+    sort
+  };
+
+  // Only add sellerId if provided (for MyAds seller-specific filtering)
+  if (sellerId !== undefined && sellerId !== null) {
+    queryParams.sellerId = sellerId;
+  }
+
   const res = await client.get<PageResponse<CarItem>>(
     `/api/v1/cars/getAllCars`,
-    { params: { page, size, sort } }
+    { params: queryParams }
   );
   return res.data;
 }

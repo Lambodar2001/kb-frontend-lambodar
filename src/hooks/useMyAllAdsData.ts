@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { ENTITY_ORDER, myAdEntityAdapters } from '../screens/MyAds/entityAdapters';
 import type { MyAdEntityType, MyAdListItem } from '../screens/MyAds/types';
+import { useAuth } from '../context/AuthContext';
 
 type EntityState = {
   items: MyAdListItem[];
@@ -23,6 +24,7 @@ const createInitialState = (): EntityStateMap => ({
 });
 
 export const useMyAllAdsData = () => {
+  const { sellerId } = useAuth(); // Get sellerId from AuthContext
   const [entityState, setEntityState] = useState<EntityStateMap>(createInitialState);
   const entityStateRef = useRef<EntityStateMap>(entityState);
   const [hydrating, setHydrating] = useState(false);
@@ -62,7 +64,8 @@ export const useMyAllAdsData = () => {
       const pageSize = adapter.pageSize ?? FALLBACK_PAGE_SIZE;
 
       try {
-        const result = await adapter.fetchPage(nextPage, pageSize);
+        // Pass sellerId to fetch only the logged-in seller's ads
+        const result = await adapter.fetchPage(nextPage, pageSize, sellerId);
         const normalized = result.items.map(adapter.mapToListItem);
 
         updateEntityState((prev) => ({
@@ -91,7 +94,7 @@ export const useMyAllAdsData = () => {
         }));
       }
     },
-    [updateEntityState]
+    [updateEntityState, sellerId]
   );
 
   const hydrateAll = useCallback(async () => {

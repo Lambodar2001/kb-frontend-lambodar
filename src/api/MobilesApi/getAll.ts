@@ -34,11 +34,22 @@ export type PageResponse<T> = {
   empty?: boolean;
 };
 
-export async function getAllMobiles(params?: { page?: number; size?: number; sort?: string }) {
-  const { page = 0, size = 20, sort = 'createdAt,DESC' } = params || {};
+export async function getAllMobiles(params?: { page?: number; size?: number; sort?: string; sellerId?: number }) {
+  const { page = 0, size = 20, sort = 'createdAt,DESC', sellerId } = params || {};
+  const queryParams: { page: number; size: number; sort: string; sellerId?: number } = {
+    page,
+    size,
+    sort
+  };
+
+  // Only add sellerId if provided (for MyAds seller-specific filtering)
+  if (sellerId !== undefined && sellerId !== null) {
+    queryParams.sellerId = sellerId;
+  }
+
   const res = await client.get<PageResponse<MobileItem>>(
     `/api/v1/mobiles/getAllMobiles`,
-    { params: { page, size, sort } }
+    { params: queryParams }
   );
   return res.data;
 }

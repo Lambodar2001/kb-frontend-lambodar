@@ -2,7 +2,7 @@ import { formatINR } from '../../utils/formatCurrency';
 import { getAllMobiles, type MobileItem } from '../../api/MobilesApi/getAll';
 import { getAllCars, type CarItem } from '../../api/CarsApi/getAll';
 import { getAllBikes, type BikeItem } from '../../api/BikesApi/getAllBikes';
-import { getAllLaptops, type LaptopItem } from '../../api/LaptopsApi/getAll';
+import { getLaptopsBySeller, type LaptopItem } from '../../api/LaptopsApi/getAll';
 import type { MyAdEntityType, MyAdListItem } from './types';
 
 const MOBILE_PLACEHOLDER = require('../../assets/icons/mobile.png');
@@ -33,7 +33,7 @@ export type FetchResult<T> = {
 
 export type EntityAdapter<TItem> = {
   type: MyAdEntityType;
-  fetchPage: (page: number, pageSize: number) => Promise<FetchResult<TItem>>;
+  fetchPage: (page: number, pageSize: number, sellerId?: number | null) => Promise<FetchResult<TItem>>;
   mapToListItem: (item: TItem) => MyAdListItem<TItem>;
   pageSize?: number;
 };
@@ -45,13 +45,20 @@ const DEFAULT_PAGE_SIZE = 20;
 export const myAdEntityAdapters: Record<MyAdEntityType, EntityAdapter<any>> = {
   mobile: {
     type: 'mobile',
-    fetchPage: async (page, pageSize) => {
+    fetchPage: async (page, pageSize, sellerId) => {
       const size = pageSize || DEFAULT_PAGE_SIZE;
-      const response = await getAllMobiles({
+      const params: { page: number; size: number; sort: string; sellerId?: number } = {
         page,
         size,
         sort: 'createdAt,DESC',
-      });
+      };
+
+      // Only add sellerId if it's a valid number
+      if (typeof sellerId === 'number') {
+        params.sellerId = sellerId;
+      }
+
+      const response = await getAllMobiles(params);
       return {
         items: response.content ?? [],
         hasMore: response.last === false,
@@ -89,13 +96,20 @@ export const myAdEntityAdapters: Record<MyAdEntityType, EntityAdapter<any>> = {
   },
   car: {
     type: 'car',
-    fetchPage: async (page, pageSize) => {
+    fetchPage: async (page, pageSize, sellerId) => {
       const size = pageSize || DEFAULT_PAGE_SIZE;
-      const response = await getAllCars({
+      const params: { page: number; size: number; sort: string; sellerId?: number } = {
         page,
         size,
         sort: 'createdAt,DESC',
-      });
+      };
+
+      // Only add sellerId if it's a valid number
+      if (typeof sellerId === 'number') {
+        params.sellerId = sellerId;
+      }
+
+      const response = await getAllCars(params);
       return {
         items: response.content ?? [],
         hasMore: response.last === false,
@@ -132,15 +146,23 @@ export const myAdEntityAdapters: Record<MyAdEntityType, EntityAdapter<any>> = {
   },
   bike: {
     type: 'bike',
-    fetchPage: async (page) => {
-      // Bike API currently returns the full list, so fetch once.
-      if (page > 0) {
-        return { items: [], hasMore: false };
+    fetchPage: async (page, pageSize, sellerId) => {
+      const size = pageSize || DEFAULT_PAGE_SIZE;
+      const params: { page: number; size: number; sellerId?: number } = {
+        page,
+        size,
+      };
+
+      // Only add sellerId if it's a valid number
+      if (typeof sellerId === 'number') {
+        params.sellerId = sellerId;
       }
-      const response = await getAllBikes();
+
+      const response = await getAllBikes(params);
+
       return {
         items: response.content ?? [],
-        hasMore: false,
+        hasMore: response.last === false,
       };
     },
     mapToListItem: (item: BikeItem): MyAdListItem<BikeItem> => {
@@ -173,13 +195,33 @@ export const myAdEntityAdapters: Record<MyAdEntityType, EntityAdapter<any>> = {
   },
   laptop: {
     type: 'laptop',
-    fetchPage: async (page) => {
+    fetchPage: async (page, pageSize, sellerId) => {
+      const size = pageSize || DEFAULT_PAGE_SIZE;
+
+      // Use seller-specific endpoint with pagination if sellerId is a valid number
+      if (typeof sellerId === 'number') {
+        const response = await getLaptopsBySeller({
+          sellerId,
+          status: 'ACTIVE',
+          page,
+          size,
+          sortBy: 'id',
+        });
+
+        return {
+          items: response.content ?? [],
+          hasMore: response.last === false,
+        };
+      }
+
+      // Fallback: no pagination support without sellerId
       if (page > 0) {
         return { items: [], hasMore: false };
       }
-      const items = await getAllLaptops();
+
+      // This shouldn't happen in MyAds context, but keeping for safety
       return {
-        items,
+        items: [],
         hasMore: false,
       };
     },
