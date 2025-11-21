@@ -1,4 +1,20 @@
 module.exports = {
   presets: ['module:@react-native/babel-preset'],
-  plugins: ['@babel/plugin-transform-export-namespace-from'],
+  plugins: [
+    '@babel/plugin-transform-export-namespace-from',
+    [
+      'module-resolver',
+      {
+        root: ['./src'],
+        alias: {
+          '@features': './src/features',
+          '@shared': './src/shared',
+          '@navigation': './src/navigation',
+          '@assets': './src/assets',
+          '@theme': './src/theme',
+          '@context': './src/context',
+        },
+      },
+    ],
+  ],
 };

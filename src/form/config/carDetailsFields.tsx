@@ -10,7 +10,7 @@ import {
   CURRENT_YEAR,
   MIN_CAR_YEAR,
 } from '../schemas/carDetailsSchema';
-import { DropdownOption } from '../../components/form/DropdownField';
+import { DropdownOption } from '@shared/components';
 import { Condition } from '../../types/listings';
 import { colors } from '../../theme/tokens';
 

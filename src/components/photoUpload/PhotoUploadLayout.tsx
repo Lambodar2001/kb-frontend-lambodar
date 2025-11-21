@@ -3,12 +3,13 @@ import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import PrimaryButton from '../common/PrimaryButton';
-import ProgressStepper, {
-  type StepConfig,
-  type StepStatus,
-} from '../common/ProgressStepper';
-import ScreenHeader from '../common/ScreenHeader';
+import {
+  PrimaryButton,
+  ProgressStepper,
+  ScreenHeader,
+  StepConfig,
+  StepStatus,
+} from '@shared/components';
 import { colors, radii, spacing } from '../../theme/tokens';
 
 export type PhotoUploadStepState = 'complete' | 'active' | 'upcoming';

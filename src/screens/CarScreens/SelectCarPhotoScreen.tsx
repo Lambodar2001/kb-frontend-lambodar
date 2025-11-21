@@ -8,10 +8,10 @@ import { Asset, launchCamera, launchImageLibrary } from 'react-native-image-pick
 import PhotoUploadLayout, {
   PhotoUploadProgressState,
 } from '../../components/photoUpload/PhotoUploadLayout';
-import { useSafeAsyncState } from '../../hooks/useSafeAsyncState';
+import { useSafeAsyncState } from '@shared/hooks';
 import { CarStackParamList } from '../../navigation/CarStack';
-import { ensureOverlayReady } from '../../utils/ensureOverlayReady';
-import { uploadCarImages } from '../../api/CarsApi/uploadImages';
+import { ensureOverlayReady } from '@shared/utils';
+import { uploadCarImages } from '@features/seller/sell/api/CarsApi/uploadImages';
 
 type SelectPhotoNavProp = NativeStackNavigationProp<CarStackParamList, 'SelectPhoto'>;
 type RouteProps = RouteProp<CarStackParamList, 'SelectPhoto'>;

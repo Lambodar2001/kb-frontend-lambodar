@@ -4,7 +4,7 @@ import { StyleSheet, Text } from 'react-native';
 
 import { FormFieldConfig } from './types';
 import { MobileDetailsFormValues } from '../schemas/mobileDetailsSchema';
-import { DropdownOption } from '../../components/form/DropdownField';
+import { DropdownOption } from '@shared/components';
 import { colors } from '../../theme/tokens';
 
 interface MobileFieldConfigOptions {

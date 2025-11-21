@@ -5,13 +5,13 @@ import { CommonActions, RouteProp, useNavigation, useRoute } from '@react-naviga
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import SellFlowLayout from '../Sell/common/SellFlowLayout';
-import PrimaryButton from '../../components/common/PrimaryButton';
+import { PrimaryButton } from '@shared/components';
 import ConfirmContactForm, {
   type ConfirmContactFormValues,
 } from '../../components/sell/ConfirmContactForm';
-import { useSafeAsyncState } from '../../hooks/useSafeAsyncState';
+import { useSafeAsyncState } from '@shared/hooks';
 import { useAuth } from '../../context/AuthContext';
-import { getConfirmDetailsCombined, type CarConfirmDetailsDTO } from '../../api/CarsApi';
+import { getConfirmDetailsCombined, type CarConfirmDetailsDTO } from '@features/seller/sell/api/CarsApi';
 import { SellCarStackParamList } from '../../navigation/SellCarStack';
 
 type ConfirmRoute = RouteProp<SellCarStackParamList, 'ConfirmDetails'>;

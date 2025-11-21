@@ -6,14 +6,16 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import SellFlowLayout from '../Sell/common/SellFlowLayout';
-import PrimaryButton from '../../components/common/PrimaryButton';
-import TextField from '../../components/form/TextField';
-import Textarea from '../../components/form/Textarea';
-import DropdownField, { DropdownOption } from '../../components/form/DropdownField';
-import ReadonlyPickerInput from '../../components/form/ReadonlyPickerInput';
-import BottomSheetPicker, {
+import {
+  PrimaryButton,
+  BottomSheetPicker,
   BottomSheetPickerOption,
-} from '../../components/common/BottomSheetPicker';
+  TextField,
+  Textarea,
+  DropdownField,
+  DropdownOption,
+  ReadonlyPickerInput,
+} from '@shared/components';
 import { colors, spacing } from '../../theme/tokens';
 import { useFormState } from '../../form/hooks/useFormState';
 import {
@@ -27,9 +29,9 @@ import { FormFieldConfig } from '../../form/config/types';
 import { getCarDetailsFieldConfig } from '../../form/config/carDetailsFields';
 import { useAuth } from '../../context/AuthContext';
 import { toCarCreateDTO } from '../../mappers/listingMappers';
-import { addCar } from '../../api/CarsApi';
-import { normalizeCreateResponse } from '../../utils/normalizeCreateResponse';
-import getFriendlyApiError from '../../utils/getFriendlyApiError';
+import { addCar } from '@features/seller/sell/api/CarsApi';
+import { normalizeCreateResponse } from '@shared/utils';
+import { getFriendlyApiError } from '@shared/utils';
 import { SellCarStackParamList } from '../../navigation/SellCarStack';
 
 type AddCarDetailsScreenNavigationProp = NativeStackNavigationProp<

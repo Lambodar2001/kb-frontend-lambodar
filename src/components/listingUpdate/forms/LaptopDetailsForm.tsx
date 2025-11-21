@@ -1,8 +1,10 @@
 import React from 'react';
 import { View } from 'react-native';
 
-import ListingFormInput from '../../form/ListingFormInput';
-import ListingFormDropdown from '../../form/ListingFormDropdown';
+import {
+  ListingFormInput,
+  ListingFormDropdown,
+} from '@shared/components';
 import { LISTING_UPDATE_SPACING as SPACING } from '../../../theme/listingUpdate';
 import { ListingFormErrors, ListingFormTouched } from '../../../hooks/useListingUpdateForm';
 

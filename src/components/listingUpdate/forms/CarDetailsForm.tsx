@@ -1,10 +1,12 @@
 import React from 'react';
 import { Text, View } from 'react-native';
 
-import ListingFormInput from '../../form/ListingFormInput';
-import ListingFormDropdown from '../../form/ListingFormDropdown';
-import ListingFormTextArea from '../../form/ListingFormTextArea';
-import ListingYearPickerField from '../../form/ListingYearPickerField';
+import {
+  ListingFormInput,
+  ListingFormDropdown,
+  ListingFormTextArea,
+  ListingYearPickerField,
+} from '@shared/components';
 import { listingUpdateStyles, LISTING_UPDATE_SPACING as SPACING } from '../../../theme/listingUpdate';
 import { ListingFormErrors, ListingFormTouched } from '../../../hooks/useListingUpdateForm';
 

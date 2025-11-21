@@ -12,8 +12,8 @@ import BottomSheet from '../../components/myads/BottomSheet';
 import BottomActionBar from '../../components/myadsFlowComponents/BottomActionBar';
 import BikeCardMenu from '../../components/bikes/BikeCardMenu';
 import useListingDetails from '../../hooks/useListingDetails';
-import { deleteBike, getBikeById, BikeDetail } from '../../api/BikesApi';
-import { formatPriceWithNegotiable } from '../../utils/formatCurrency';
+import { deleteBike, getBikeById, BikeDetail } from '@features/seller/sell/api/BikesApi';
+import { formatPriceWithNegotiable } from '@shared/utils';
 import { ACTION_BAR_HEIGHT, BOTTOM_SHEET_MENU_HEIGHT } from '../../constants/listing';
 
 type DetailsRouteProp = RouteProp<MyBikeAdsStackParamList, 'ProductDetails'>;

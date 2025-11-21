@@ -4,13 +4,13 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { MyCarAdsStackParamList } from '../../navigation/MyCarAdsStack';
-import { deleteCar, getAllCars } from '../../api/CarsApi';
+import { deleteCar, getAllCars } from '@features/seller/sell/api/CarsApi';
 
 import CarCard from '../../components/cars/CarCard';
 import CarCardMenu from '../../components/cars/CarCardMenu';
 import MyAdsListLayout from '../MyAds/common/MyAdsListLayout';
 import { useMyAdsStatusFilter } from '../../hooks/useMyAdsStatusFilter';
-import { formatINR } from '../../utils/formatCurrency';
+import { formatINR } from '@shared/utils';
 import { DEFAULT_LISTING_LOCATION, BOTTOM_SHEET_MENU_HEIGHT, getStatusLabel } from '../../constants/listing';
 import { CarListing } from '../../types/listing';
 

@@ -1,8 +1,8 @@
-import { formatINR } from '../../utils/formatCurrency';
-import { getAllMobiles, type MobileItem } from '../../api/MobilesApi/getAll';
-import { getAllCars, type CarItem } from '../../api/CarsApi/getAll';
-import { getAllBikes, type BikeItem } from '../../api/BikesApi/getAllBikes';
-import { getLaptopsBySeller, type LaptopItem } from '../../api/LaptopsApi/getAll';
+import { formatINR } from '@shared/utils';
+import { getAllMobiles, type MobileItem } from '@features/seller/sell/api/MobilesApi/getAll';
+import { getAllCars, type CarItem } from '@features/seller/sell/api/CarsApi/getAll';
+import { getAllBikes, type BikeItem } from '@features/seller/sell/api/BikesApi/getAllBikes';
+import { getLaptopsBySeller, type LaptopItem } from '@features/seller/sell/api/LaptopsApi/getAll';
 import type { MyAdEntityType, MyAdListItem } from './types';
 
 const MOBILE_PLACEHOLDER = require('../../assets/icons/mobile.png');

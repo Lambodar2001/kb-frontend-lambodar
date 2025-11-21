@@ -4,13 +4,13 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { MyMobileAdsStackParamList } from '../../navigation/MyMobileAdsStack';
-import { deleteMobile, getAllMobiles } from '../../api/MobilesApi';
+import { deleteMobile, getAllMobiles } from '@features/seller/sell/api/MobilesApi';
 
 import MobileCard from '../../components/mobiles/MobileCard';
 import MobileCardMenu from '../../components/mobiles/MobileCardMenu';
 import MyAdsListLayout from '../MyAds/common/MyAdsListLayout';
 import { useMyAdsStatusFilter } from '../../hooks/useMyAdsStatusFilter';
-import { formatINR } from '../../utils/formatCurrency';
+import { formatINR } from '@shared/utils';
 import { DEFAULT_LISTING_LOCATION, BOTTOM_SHEET_MENU_HEIGHT, getStatusLabel } from '../../constants/listing';
 import { MobileListing } from '../../types/listing';
 

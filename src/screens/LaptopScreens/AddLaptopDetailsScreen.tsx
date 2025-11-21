@@ -6,9 +6,12 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import SellFlowLayout from '../Sell/common/SellFlowLayout';
-import PrimaryButton from '../../components/common/PrimaryButton';
-import TextField from '../../components/form/TextField';
-import DropdownField, { DropdownOption } from '../../components/form/DropdownField';
+import {
+  PrimaryButton,
+  TextField,
+  DropdownField,
+  DropdownOption,
+} from '@shared/components';
 import { colors, spacing } from '../../theme/tokens';
 import { useFormState } from '../../form/hooks/useFormState';
 import {
@@ -18,12 +21,12 @@ import {
 } from '../../form/schemas/laptopDetailsSchema';
 import { FormFieldConfig } from '../../form/config/types';
 import { laptopDetailsFieldConfig } from '../../form/config/laptopDetailsFields';
-import { normalizeCreateResponse } from '../../utils/normalizeCreateResponse';
+import { normalizeCreateResponse } from '@shared/utils';
 import { toLaptopCreateDTO } from '../../mappers/listingMappers';
-import { addLaptop } from '../../api/LaptopsApi';
+import { addLaptop } from '@features/seller/sell/api/LaptopsApi';
 import { useAuth } from '../../context/AuthContext';
 import { SellLaptopStackParamList } from '../../navigation/SellLaptopStack';
-import getFriendlyApiError from '../../utils/getFriendlyApiError';
+import { getFriendlyApiError } from '@shared/utils';
 
 type AddLaptopNav = NativeStackNavigationProp<SellLaptopStackParamList, 'AddLaptopDetails'>;
 

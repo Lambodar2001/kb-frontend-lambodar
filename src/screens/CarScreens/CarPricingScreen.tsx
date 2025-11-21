@@ -5,7 +5,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import PricingScreen from '../Sell/common/PricingScreen';
 import { SellCarStackParamList } from '../../navigation/SellCarStack';
-import { getCarById } from '../../api/CarsApi';
+import { getCarById } from '@features/seller/sell/api/CarsApi';
 
 type CarPricingNavProp = NativeStackNavigationProp<SellCarStackParamList, 'CarPricingScreen'>;
 type CarPricingRouteProp = RouteProp<SellCarStackParamList, 'CarPricingScreen'>;

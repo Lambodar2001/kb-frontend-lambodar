@@ -7,10 +7,10 @@ import { Asset, launchCamera, launchImageLibrary } from 'react-native-image-pick
 import PhotoUploadLayout, {
   PhotoUploadProgressState,
 } from '../../components/photoUpload/PhotoUploadLayout';
-import { useSafeAsyncState } from '../../hooks/useSafeAsyncState';
+import { useSafeAsyncState } from '@shared/hooks';
 import { SellBikeStackParamList } from '../../navigation/SellBikeStack';
-import { ensureOverlayReady } from '../../utils/ensureOverlayReady';
-import { uploadBikeImages } from '../../api/BikesApi';
+import { ensureOverlayReady } from '@shared/utils';
+import { uploadBikeImages } from '@features/seller/sell/api/BikesApi';
 
 type SelectPhotoNavProp = NativeStackNavigationProp<SellBikeStackParamList, 'SelectPhoto'>;
 type RouteProps = RouteProp<SellBikeStackParamList, 'SelectPhoto'>;

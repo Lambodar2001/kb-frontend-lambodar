@@ -7,14 +7,16 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import SellFlowLayout from '../Sell/common/SellFlowLayout';
-import PrimaryButton from '../../components/common/PrimaryButton';
-import TextField from '../../components/form/TextField';
-import Textarea from '../../components/form/Textarea';
-import DropdownField, { DropdownOption } from '../../components/form/DropdownField';
-import ReadonlyPickerInput from '../../components/form/ReadonlyPickerInput';
-import BottomSheetPicker, {
+import {
+  PrimaryButton,
+  BottomSheetPicker,
   BottomSheetPickerOption,
-} from '../../components/common/BottomSheetPicker';
+  TextField,
+  Textarea,
+  DropdownField,
+  DropdownOption,
+  ReadonlyPickerInput,
+} from '@shared/components';
 import { colors, spacing } from '../../theme/tokens';
 import { useFormState } from '../../form/hooks/useFormState';
 import {
@@ -26,12 +28,12 @@ import {
 } from '../../form/schemas/mobileDetailsSchema';
 import { FormFieldConfig } from '../../form/config/types';
 import { getMobileDetailsFieldConfig } from '../../form/config/mobileDetailsFields';
-import { normalizeCreateResponse } from '../../utils/normalizeCreateResponse';
+import { normalizeCreateResponse } from '@shared/utils';
 import { toMobileCreateDTO } from '../../mappers/listingMappers';
-import { addMobile } from '../../api/MobilesApi';
+import { addMobile } from '@features/seller/sell/api/MobilesApi';
 import { useAuth } from '../../context/AuthContext';
 import { SellMobileStackParamList } from '../../navigation/SellMobileStack';
-import getFriendlyApiError from '../../utils/getFriendlyApiError';
+import { getFriendlyApiError } from '@shared/utils';
 
 type AddMobileDetailsScreenNavigationProp = NativeStackNavigationProp<
   SellMobileStackParamList,

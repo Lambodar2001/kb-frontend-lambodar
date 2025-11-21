@@ -3,8 +3,8 @@ import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import MyBikeAdsListScreen from '../screens/BikeScreens/MyBikeAdsListScreen';
-import ProductDetailsScreen from '../screens/BikeScreens/ProductDetailsScreen';
-import UpdateBikeScreen from '../screens/BikeScreens/UpdateBikeScreen';
+import ProductDetailsScreen from '@features/seller/listings/screens/bike/ProductDetailsScreen';
+import UpdateBikeScreen from '@features/seller/listings/screens/bike/UpdateBikeScreen';
 
 export type MyBikeAdsStackParamList = {
   MyBikeAdsList: undefined;

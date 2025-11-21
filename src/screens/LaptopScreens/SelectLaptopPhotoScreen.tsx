@@ -4,13 +4,13 @@ import { RouteProp, useIsFocused, useNavigation, useRoute } from '@react-navigat
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Asset, launchCamera, launchImageLibrary } from 'react-native-image-picker';
 
-import { RNFile, UploadProgress, uploadLaptopImages } from '../../api/LaptopsApi';
+import { RNFile, UploadProgress, uploadLaptopImages } from '@features/seller/sell/api/LaptopsApi';
 import PhotoUploadLayout, {
   PhotoUploadProgressState,
 } from '../../components/photoUpload/PhotoUploadLayout';
-import { useSafeAsyncState } from '../../hooks/useSafeAsyncState';
+import { useSafeAsyncState } from '@shared/hooks';
 import { SellLaptopStackParamList } from '../../navigation/SellLaptopStack';
-import { ensureOverlayReady } from '../../utils/ensureOverlayReady';
+import { ensureOverlayReady } from '@shared/utils';
 
 type SelectLaptopPhotoNav = NativeStackNavigationProp<
   SellLaptopStackParamList,

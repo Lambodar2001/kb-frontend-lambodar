@@ -9,7 +9,7 @@ import {
   onUnauthorized,
   persistSession,
   PersistedSession,
-} from '../utils/storage';
+} from '@shared/utils';
 
 type AuthState = {
   isLoading: boolean;

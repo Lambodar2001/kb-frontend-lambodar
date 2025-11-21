@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 
-import TextField from '../form/TextField';
+import { TextField } from '@shared/components';
 import { spacing } from '../../theme/tokens';
 
 export type ConfirmContactFormValues = {

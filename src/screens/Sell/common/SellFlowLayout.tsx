@@ -3,8 +3,7 @@ import React from 'react';
 import { KeyboardAvoidingView, Platform, ScrollView, StyleProp, StyleSheet, View, ViewStyle, ScrollViewProps } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import ScreenHeader from '../../../components/common/ScreenHeader';
-import ProgressStepper, { StepConfig } from '../../../components/common/ProgressStepper';
+import { ScreenHeader, ProgressStepper, StepConfig } from '@shared/components';
 import { colors, shadows, spacing } from '../../../theme/tokens';
 
 interface SellFlowLayoutProps {

@@ -5,7 +5,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import PricingScreen from '../Sell/common/PricingScreen';
 import { SellLaptopStackParamList } from '../../navigation/SellLaptopStack';
-import { getLaptopById } from '../../api/LaptopsApi';
+import { getLaptopById } from '@features/seller/sell/api/LaptopsApi';
 
 type LaptopPricingNavProp = NativeStackNavigationProp<SellLaptopStackParamList, 'LaptopPricingScreen'>;
 type LaptopPricingRouteProp = RouteProp<SellLaptopStackParamList, 'LaptopPricingScreen'>;

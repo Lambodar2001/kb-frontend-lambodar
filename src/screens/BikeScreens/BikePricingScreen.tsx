@@ -5,7 +5,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import PricingScreen from '../Sell/common/PricingScreen';
 import { SellBikeStackParamList } from '../../navigation/SellBikeStack';
-import { getBikeById } from '../../api/BikesApi';
+import { getBikeById } from '@features/seller/sell/api/BikesApi';
 
 type BikePricingNavProp = NativeStackNavigationProp<SellBikeStackParamList, 'BikePricingScreen'>;
 type BikePricingRouteProp = RouteProp<SellBikeStackParamList, 'BikePricingScreen'>;

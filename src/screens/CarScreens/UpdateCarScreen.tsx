@@ -4,12 +4,12 @@ import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { MyCarAdsStackParamList } from '../../navigation/MyCarAdsStack';
-import { getCarById, updateCar, UpdateCarDTO, CarDetail } from '../../api/CarsApi';
+import { getCarById, updateCar, UpdateCarDTO, CarDetail } from '@features/seller/sell/api/CarsApi';
 import ListingUpdateLayout from '../../components/details/ListingUpdateLayout';
 import ListingUpdateLoader from '../../components/details/ListingUpdateLoader';
 import { listingUpdateStyles, LISTING_UPDATE_COLORS as COLORS } from '../../theme/listingUpdate';
 import useListingDetails from '../../hooks/useListingDetails';
-import getFriendlyApiError from '../../utils/getFriendlyApiError';
+import { getFriendlyApiError } from '@shared/utils';
 import { useAuth } from '../../context/AuthContext';
 import useListingUpdateForm, {
   ListingFormNormalizers,

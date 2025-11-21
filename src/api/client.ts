@@ -10,7 +10,7 @@ import {
   shouldRefreshAccessToken,
   TOKEN_EXPIRY_SKEW_MS,
   updateSession,
-} from '../utils/storage';
+} from '@shared/utils';
 import { refreshAuthTokens } from './auth';
 
 const api = axios.create({

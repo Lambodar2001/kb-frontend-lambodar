@@ -2,14 +2,14 @@ import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 // Screens
-import AddBikeDetailsScreen from '../screens/BikeScreens/AddBikeDetailsScreen';
-import SelectBikePhotoScreen from '../screens/BikeScreens/SelectBikePhotoScreen';
-import BikePricingScreen from '../screens/BikeScreens/BikePricingScreen';
-import BikeLocationScreen from '../screens/BikeScreens/BikeLocationScreen';
+import AddBikeDetailsScreen from '@features/seller/sell/screens/bike/AddBikeDetailsScreen';
+import SelectBikePhotoScreen from '@features/seller/sell/screens/bike/SelectBikePhotoScreen';
+import BikePricingScreen from '@features/seller/sell/screens/bike/BikePricingScreen';
+import BikeLocationScreen from '@features/seller/sell/screens/bike/BikeLocationScreen';
 import ChooseLocationScreen from '../screens/Sell/common/ChooseLocationScreen';
 import ChooseCityScreen from '../screens/Sell/common/ChooseCityScreen';
 import ChooseAreaScreen from '../screens/Sell/common/ChooseAreaScreen';
-import ConfirmDetailsScreen from '../screens/BikeScreens/ConfirmDetailsScreen';
+import ConfirmDetailsScreen from '@features/seller/sell/screens/bike/ConfirmDetailsScreen';
 
 export type SellBikeStackParamList = {
   AddBikeDetails: undefined;

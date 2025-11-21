@@ -7,14 +7,16 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import SellFlowLayout from '../Sell/common/SellFlowLayout';
-import PrimaryButton from '../../components/common/PrimaryButton';
-import TextField from '../../components/form/TextField';
-import Textarea from '../../components/form/Textarea';
-import DropdownField, { DropdownOption } from '../../components/form/DropdownField';
-import ReadonlyPickerInput from '../../components/form/ReadonlyPickerInput';
-import BottomSheetPicker, {
+import {
+  PrimaryButton,
+  BottomSheetPicker,
   BottomSheetPickerOption,
-} from '../../components/common/BottomSheetPicker';
+  TextField,
+  Textarea,
+  DropdownField,
+  DropdownOption,
+  ReadonlyPickerInput
+} from '@shared/components';
 import { colors, spacing } from '../../theme/tokens';
 import { useFormState } from '../../form/hooks/useFormState';
 import {
@@ -26,12 +28,11 @@ import {
 } from '../../form/schemas/bikeDetailsSchema';
 import { FormFieldConfig } from '../../form/config/types';
 import { getBikeDetailsFieldConfig } from '../../form/config/bikeDetailsFields';
-import { normalizeCreateResponse } from '../../utils/normalizeCreateResponse';
+import { normalizeCreateResponse, getFriendlyApiError } from '@shared/utils';
 import { toBikeCreateDTO } from '../../mappers/listingMappers';
-import { addBike } from '../../api/BikesApi';
+import { addBike } from '@features/seller/sell/api/BikesApi';
 import { useAuth } from '../../context/AuthContext';
 import { SellBikeStackParamList } from '../../navigation/SellBikeStack';
-import getFriendlyApiError from '../../utils/getFriendlyApiError';
 
 type AddBikeDetailsScreenNavigationProp = NativeStackNavigationProp<
   SellBikeStackParamList,

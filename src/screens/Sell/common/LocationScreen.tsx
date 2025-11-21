@@ -4,8 +4,7 @@ import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import SellFlowLayout from './SellFlowLayout';
-import PrimaryButton from '../../../components/common/PrimaryButton';
-import FormField from '../../../components/form/FormField';
+import { PrimaryButton, FormField } from '@shared/components';
 import { colors, radii, spacing } from '../../../theme/tokens';
 
 type EntityType = 'car' | 'bike' | 'mobile' | 'laptop';

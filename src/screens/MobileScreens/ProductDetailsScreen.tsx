@@ -11,9 +11,9 @@ import BottomSheet from '../../components/myads/BottomSheet';
 import BottomActionBar from '../../components/myadsFlowComponents/BottomActionBar';
 import MobileCardMenu from '../../components/mobiles/MobileCardMenu';
 import useListingDetails from '../../hooks/useListingDetails';
-import { deleteMobile, getMobileById, MobileDetail } from '../../api/MobilesApi';
+import { deleteMobile, getMobileById, MobileDetail } from '@features/seller/sell/api/MobilesApi';
 import { MyAdsStackParamList } from '../../navigation/MyAdsStack';
-import { formatPriceWithNegotiable } from '../../utils/formatCurrency';
+import { formatPriceWithNegotiable } from '@shared/utils';
 import { ACTION_BAR_HEIGHT, BOTTOM_SHEET_MENU_HEIGHT } from '../../constants/listing';
 
 type DetailsRouteProp = RouteProp<MyAdsStackParamList, 'ProductDetails'>;

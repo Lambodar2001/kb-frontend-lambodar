@@ -4,14 +4,14 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { MyBikeAdsStackParamList } from '../../navigation/MyBikeAdsStack';
-import { deleteBike } from '../../api/BikesApi';
-import { getAllBikes, BikeItem } from '../../api/BikesApi/getAllBikes';
+import { deleteBike } from '@features/seller/sell/api/BikesApi';
+import { getAllBikes, BikeItem } from '@features/seller/sell/api/BikesApi/getAllBikes';
 
 import BikeCard from '../../components/bikes/BikeCard';
 import BikeCardMenu from '../../components/bikes/BikeCardMenu';
 import MyAdsListLayout from '../MyAds/common/MyAdsListLayout';
 import { useMyAdsStatusFilter } from '../../hooks/useMyAdsStatusFilter';
-import { formatINR } from '../../utils/formatCurrency';
+import { formatINR } from '@shared/utils';
 import { DEFAULT_LISTING_LOCATION, BOTTOM_SHEET_MENU_HEIGHT, getStatusLabel } from '../../constants/listing';
 
 type NavigationProp = NativeStackNavigationProp<MyBikeAdsStackParamList>;

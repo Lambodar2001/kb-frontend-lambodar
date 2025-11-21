@@ -4,12 +4,12 @@ import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { MyAdsStackParamList } from '../../navigation/MyAdsStack';
-import { getMobileById, updateMobile, UpdateMobileDTO, MobileDetail } from '../../api/MobilesApi';
+import { getMobileById, updateMobile, UpdateMobileDTO, MobileDetail } from '@features/seller/sell/api/MobilesApi';
 import ListingUpdateLayout from '../../components/details/ListingUpdateLayout';
 import ListingUpdateLoader from '../../components/details/ListingUpdateLoader';
 import { listingUpdateStyles, LISTING_UPDATE_COLORS as COLORS } from '../../theme/listingUpdate';
 import useListingDetails from '../../hooks/useListingDetails';
-import getFriendlyApiError from '../../utils/getFriendlyApiError';
+import { getFriendlyApiError } from '@shared/utils';
 import { useAuth } from '../../context/AuthContext';
 import useListingUpdateForm, {
   ListingFormNormalizers,

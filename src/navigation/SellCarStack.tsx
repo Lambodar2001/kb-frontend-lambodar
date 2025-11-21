@@ -1,14 +1,14 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import AddCarDetailsScreen from '../screens/CarScreens/AddCarDetailsScreen';
-import SelectCarPhotoScreen from '../screens/CarScreens/SelectCarPhotoScreen';
-import CarPricingScreen from '../screens/CarScreens/CarPricingScreen';
-import CarLocationScreen from '../screens/CarScreens/CarLocationScreen';
+import AddCarDetailsScreen from '@features/seller/sell/screens/car/AddCarDetailsScreen';
+import SelectCarPhotoScreen from '@features/seller/sell/screens/car/SelectCarPhotoScreen';
+import CarPricingScreen from '@features/seller/sell/screens/car/CarPricingScreen';
+import CarLocationScreen from '@features/seller/sell/screens/car/CarLocationScreen';
 import ChooseLocationScreen from '../screens/Sell/common/ChooseLocationScreen';
 import ChooseCityScreen from '../screens/Sell/common/ChooseCityScreen';
 import ChooseAreaScreen from '../screens/Sell/common/ChooseAreaScreen';
-import ConfirmDetailsScreen from '../screens/CarScreens/ConfirmDetailsScreen';
+import ConfirmDetailsScreen from '@features/seller/sell/screens/car/ConfirmDetailsScreen';
 
 export type SellCarStackParamList = {
   AddCarDetails: undefined;

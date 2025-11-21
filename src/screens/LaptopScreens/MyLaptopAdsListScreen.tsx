@@ -4,13 +4,13 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { MyLaptopAdsStackParamList } from '../../navigation/MyLaptopAdsStack';
-import { deleteLaptop, getAllLaptops, LaptopItem } from '../../api/LaptopsApi';
+import { deleteLaptop, getAllLaptops, LaptopItem } from '@features/seller/sell/api/LaptopsApi';
 
 import ListingCard from '../../components/myads/ListingCard';
 import ListingCardMenu from '../../components/myads/ListingCardMenu';
 import MyAdsListLayout from '../MyAds/common/MyAdsListLayout';
 import { useMyAdsStatusFilter } from '../../hooks/useMyAdsStatusFilter';
-import { formatINR } from '../../utils/formatCurrency';
+import { formatINR } from '@shared/utils';
 import { DEFAULT_LISTING_LOCATION, BOTTOM_SHEET_MENU_HEIGHT, getStatusLabel } from '../../constants/listing';
 
 type NavigationProp = NativeStackNavigationProp<MyLaptopAdsStackParamList>;

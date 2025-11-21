@@ -6,11 +6,11 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import ConfirmContactForm, {
   type ConfirmContactFormValues,
 } from '../../components/sell/ConfirmContactForm';
-import PrimaryButton from '../../components/common/PrimaryButton';
+import { PrimaryButton } from '@shared/components';
 import SellFlowLayout from '../Sell/common/SellFlowLayout';
-import { useSafeAsyncState } from '../../hooks/useSafeAsyncState';
+import { useSafeAsyncState } from '@shared/hooks';
 import { useAuth } from '../../context/AuthContext';
-import { getLaptopConfirmDetailsCombined, type LaptopConfirmDetailsDTO } from '../../api/LaptopsApi';
+import { getLaptopConfirmDetailsCombined, type LaptopConfirmDetailsDTO } from '@features/seller/sell/api/LaptopsApi';
 import { SellLaptopStackParamList } from '../../navigation/SellLaptopStack';
 
 type ConfirmLaptopNav = NativeStackNavigationProp<SellLaptopStackParamList, 'ConfirmLaptopDetails'>;

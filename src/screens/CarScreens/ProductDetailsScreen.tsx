@@ -12,8 +12,8 @@ import BottomSheet from '../../components/myads/BottomSheet';
 import BottomActionBar from '../../components/myadsFlowComponents/BottomActionBar';
 import CarCardMenu from '../../components/cars/CarCardMenu';
 import useListingDetails from '../../hooks/useListingDetails';
-import { deleteCar, getCarById, CarDetail } from '../../api/CarsApi';
-import { formatPriceWithNegotiable } from '../../utils/formatCurrency';
+import { deleteCar, getCarById, CarDetail } from '@features/seller/sell/api/CarsApi';
+import { formatPriceWithNegotiable } from '@shared/utils';
 import { ACTION_BAR_HEIGHT, BOTTOM_SHEET_MENU_HEIGHT } from '../../constants/listing';
 
 type DetailsRouteProp = RouteProp<MyCarAdsStackParamList, 'ProductDetails'>;

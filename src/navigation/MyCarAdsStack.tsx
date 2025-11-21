@@ -3,8 +3,8 @@ import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import MyCarAdsListScreen from '../screens/CarScreens/MyCarAdsListScreen';
-import CarDetailsScreen from '../screens/CarScreens/ProductDetailsScreen';
-import UpdateCarScreen from '../screens/CarScreens/UpdateCarScreen';
+import CarDetailsScreen from '@features/seller/listings/screens/car/ProductDetailsScreen';
+import UpdateCarScreen from '@features/seller/listings/screens/car/UpdateCarScreen';
 
 export type MyCarAdsStackParamList = {
   MyCarAdsList: undefined;

@@ -1,4 +1,4 @@
-import { StepConfig } from '../../../components/common/ProgressStepper';
+import type { StepConfig } from '@shared/components';
 
 const STEP_LABELS = ['Details', 'Photos', 'Pricing', 'Location', 'Confirm'] as const;
 
