@@ -3,8 +3,8 @@ import { View, Text, StyleSheet, Pressable } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { SellEntryStackParamList } from '../../../../navigation/SellEntryStack';
-import { useAuth } from '../../../../context/AuthContext';
+import { SellEntryStackParamList } from '@navigation/SellEntryStack';
+import { useAuth } from '@context/AuthContext';
 
 type Nav = NativeStackNavigationProp<SellEntryStackParamList, 'SellProduct'>;
 

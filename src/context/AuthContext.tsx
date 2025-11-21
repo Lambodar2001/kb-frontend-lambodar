@@ -1,6 +1,6 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { LoginResponse, loginUser, logoutUser } from '../api/auth';
-import api from '../api/client';
+import api from '@shared/api/client';
 import {
   clearSession,
   getCachedSession,

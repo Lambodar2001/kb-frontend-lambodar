@@ -1,5 +1,5 @@
 // src/api/CarsApi/getAll.ts
-import client from '../../../../../api/client';
+import client from '@shared/api/client';
 
 export type CarStatus = 'ACTIVE' | 'DRAFT' | 'SOLD' | string;
 

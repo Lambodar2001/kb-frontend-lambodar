@@ -3,7 +3,7 @@ import React from 'react';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import PricingScreen from '../../../../../screens/Sell/common/PricingScreen';
+import PricingScreen from '../common/PricingScreen';
 import { SellBikeStackParamList } from '@navigation/SellBikeStack';
 import { getBikeById } from '@features/seller/sell/api/BikesApi';
 

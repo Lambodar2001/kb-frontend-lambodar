@@ -6,7 +6,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import SellFlowLayout from '../../../../../screens/Sell/common/SellFlowLayout';
+import SellFlowLayout from '../common/SellFlowLayout';
 import {
   PrimaryButton,
   BottomSheetPicker,
@@ -18,18 +18,18 @@ import {
   ReadonlyPickerInput
 } from '@shared/components';
 import { colors, spacing } from '@theme/tokens';
-import { useFormState } from '../../../../../form/hooks/useFormState';
+import { useFormState } from '@shared/form/hooks/useFormState';
 import {
   CURRENT_YEAR,
   MIN_BIKE_YEAR,
   BikeDetailsFormValues,
   getDefaultBikeDetailsValues,
   bikeDetailsSchema,
-} from '../../../../../form/schemas/bikeDetailsSchema';
-import { FormFieldConfig } from '../../../../../form/config/types';
-import { getBikeDetailsFieldConfig } from '../../../../../form/config/bikeDetailsFields';
+} from '@shared/form/schemas/bikeDetailsSchema';
+import { FormFieldConfig } from '@shared/form/config/types';
+import { getBikeDetailsFieldConfig } from '@shared/form/config/bikeDetailsFields';
 import { normalizeCreateResponse, getFriendlyApiError } from '@shared/utils';
-import { toBikeCreateDTO } from '../../../../../mappers/listingMappers';
+import { toBikeCreateDTO } from '@shared/mappers/listingMappers';
 import { addBike } from '@features/seller/sell/api/BikesApi';
 import { useAuth } from '@context/AuthContext';
 import { SellBikeStackParamList } from '@navigation/SellBikeStack';

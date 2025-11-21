@@ -5,9 +5,9 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import ConfirmContactForm, {
   type ConfirmContactFormValues,
-} from '../../../../../components/sell/ConfirmContactForm';
+} from '../../components/sell/ConfirmContactForm';
 import { PrimaryButton } from '@shared/components';
-import SellFlowLayout from '../../../../../screens/Sell/common/SellFlowLayout';
+import SellFlowLayout from '../common/SellFlowLayout';
 import { useSafeAsyncState } from '@shared/hooks';
 import { useAuth } from '@context/AuthContext';
 import { getConfirmDetailsCombined, type ConfirmDetailsDTO } from '@features/seller/sell/api/BikesApi';

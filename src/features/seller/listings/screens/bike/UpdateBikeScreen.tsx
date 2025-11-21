@@ -5,19 +5,19 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { MyBikeAdsStackParamList } from '@navigation/MyBikeAdsStack';
 import { getBikeById, updateBike, UpdateBikeDTO, BikeDetail } from '@features/seller/sell/api/BikesApi';
-import ListingUpdateLayout from '../../../../../components/details/ListingUpdateLayout';
-import ListingUpdateLoader from '../../../../../components/details/ListingUpdateLoader';
+import ListingUpdateLayout from '../../components/details/ListingUpdateLayout';
+import ListingUpdateLoader from '../../components/details/ListingUpdateLoader';
 import { listingUpdateStyles, LISTING_UPDATE_COLORS as COLORS } from '@theme/listingUpdate';
-import useListingDetails from '../../../../../hooks/useListingDetails';
+import useListingDetails from '../../hooks/useListingDetails';
 import { getFriendlyApiError } from '@shared/utils';
 import { useAuth } from '@context/AuthContext';
 import useListingUpdateForm, {
   ListingFormNormalizers,
   ListingFormValidators,
-} from '../../../../../hooks/useListingUpdateForm';
+} from '../../hooks/useListingUpdateForm';
 import BikeDetailsForm, {
   BikeFormData,
-} from '../../../../../components/listingUpdate/forms/BikeDetailsForm';
+} from '../../components/listingUpdate/forms/BikeDetailsForm';
 import {
   BIKE_FUEL_TYPE_OPTIONS,
   buildBikeYearOptions,

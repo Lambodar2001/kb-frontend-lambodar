@@ -3,7 +3,7 @@ import React from 'react';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import LocationScreen from '../../../../../screens/Sell/common/LocationScreen';
+import LocationScreen from '../common/LocationScreen';
 import { SellCarStackParamList } from '@navigation/SellCarStack';
 
 type CarLocationNavProp = NativeStackNavigationProp<SellCarStackParamList, 'CarLocationScreen'>;

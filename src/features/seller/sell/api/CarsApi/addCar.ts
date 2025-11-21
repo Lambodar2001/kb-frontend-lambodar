@@ -1,5 +1,5 @@
 // src/api/CarsApi/addCar.ts
-import client from '../../../../../api/client';
+import client from '@shared/api/client';
 import { Condition } from '../../types/listings';
 import { CarFuelType, CarTransmissionType } from '../../form/schemas/carDetailsSchema';
 

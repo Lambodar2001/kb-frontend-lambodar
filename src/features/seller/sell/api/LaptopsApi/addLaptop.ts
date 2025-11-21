@@ -1,6 +1,6 @@
 // src/api/LaptopsApi/addLaptop.ts
 import type { AxiosError } from 'axios';
-import client from '../../../../../api/client';
+import client from '@shared/api/client';
 
 export type AddLaptopDTO = {
   serialNumber: string;

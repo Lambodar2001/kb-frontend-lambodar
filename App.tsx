@@ -8,13 +8,13 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import LoginScreen from './src/features/auth/screens/LoginScreen';
 import SignupScreen from './src/features/auth/screens/SignupScreen';
 import HomeScreen from './src/screens/HomeScreen';
-import ProductDetailsScreen from './src/screens/MobileScreens/ProductDetailsScreen';
+import ProductDetailsScreen from './src/features/seller/listings/screens/mobile/ProductDetailsScreen';
 import LiveBiddingScreen from './src/screens/LiveBiddingScreen';
 import ProfileScreen from './src/features/shared/profile/screens/ProfileScreen';
 
 // ✅ New entry stacks (replace old SellProductStack/MyAdsStack usage here)
-import SellEntryStack from './src/navigation/SellEntryStack';
-import MyAdsEntryStack from './src/navigation/MyAdsEntryStack';
+import SellEntryStack from './src/features/seller/sell/navigation/SellEntryStack';
+import MyAdsEntryStack from './src/features/seller/listings/navigation/MyAdsEntryStack';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 

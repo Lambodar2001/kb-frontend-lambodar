@@ -1,5 +1,5 @@
 // src/api/LaptopsApi/getAllLaptops.ts
-import client from '../../../../../api/client';
+import client from '@shared/api/client';
 import { extractLaptopPhotos, LaptopPhoto } from './photoNormalizer';
 
 export type LaptopStatus =

@@ -3,13 +3,13 @@ import { Alert, View, Text, StyleSheet } from 'react-native';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import { MyAdsEntryStackParamList } from '../../../../navigation/MyAdsEntryStack';
-import MyAdsListLayout from '../../../../screens/MyAds/common/MyAdsListLayout';
-import { useMyAdsStatusFilter } from '../../../../hooks/useMyAdsStatusFilter';
-import { useMyAllAdsData } from '../../../../hooks/useMyAllAdsData';
-import MyAdCard from '../../../../components/myads/MyAdCard';
-import MyAdsCardMenu from '../../../../components/myads/MyAdsCardMenu';
-import type { MyAdEntityType, MyAdListItem } from '../../../../screens/MyAds/types';
+import { MyAdsEntryStackParamList } from '@navigation/MyAdsEntryStack';
+import MyAdsListLayout from './common/MyAdsListLayout';
+import { useMyAdsStatusFilter } from '../hooks/useMyAdsStatusFilter';
+import { useMyAllAdsData } from '../hooks/useMyAllAdsData';
+import MyAdCard from '../components/myads/MyAdCard';
+import MyAdsCardMenu from '../components/myads/MyAdsCardMenu';
+import type { MyAdEntityType, MyAdListItem } from '@features/seller/listings/screens/common/types';
 import type { MobileItem } from '@features/seller/sell/api/MobilesApi/getAll';
 import type { LaptopItem } from '@features/seller/sell/api/LaptopsApi/getAll';
 import type { CarItem } from '@features/seller/sell/api/CarsApi/getAll';
@@ -18,9 +18,9 @@ import { deleteMobile } from '@features/seller/sell/api/MobilesApi';
 import { deleteLaptop } from '@features/seller/sell/api/LaptopsApi';
 import { deleteCar } from '@features/seller/sell/api/CarsApi';
 import { deleteBike } from '@features/seller/sell/api/BikesApi';
-import { ENTITY_ORDER } from '../../../../screens/MyAds/entityAdapters';
-import { BOTTOM_SHEET_MENU_HEIGHT } from '../../../../constants/listing';
-import { useAuth } from '../../../../context/AuthContext';
+import { ENTITY_ORDER } from '@features/seller/listings/screens/common/entityAdapters';
+import { BOTTOM_SHEET_MENU_HEIGHT } from '@shared/constants/listing';
+import { useAuth } from '@context/AuthContext';
 
 type NavigationProp = NativeStackNavigationProp<MyAdsEntryStackParamList>;
 

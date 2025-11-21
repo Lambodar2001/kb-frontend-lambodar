@@ -5,7 +5,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import SellFlowLayout from '../../../../../screens/Sell/common/SellFlowLayout';
+import SellFlowLayout from '../common/SellFlowLayout';
 import {
   PrimaryButton,
   BottomSheetPicker,
@@ -17,18 +17,18 @@ import {
   ReadonlyPickerInput,
 } from '@shared/components';
 import { colors, spacing } from '@theme/tokens';
-import { useFormState } from '../../../../../form/hooks/useFormState';
+import { useFormState } from '@shared/form/hooks/useFormState';
 import {
   CarDetailsFormValues,
   CURRENT_YEAR,
   MIN_CAR_YEAR,
   carDetailsSchema,
   getDefaultCarDetailsValues,
-} from '../../../../../form/schemas/carDetailsSchema';
-import { FormFieldConfig } from '../../../../../form/config/types';
-import { getCarDetailsFieldConfig } from '../../../../../form/config/carDetailsFields';
+} from '@shared/form/schemas/carDetailsSchema';
+import { FormFieldConfig } from '@shared/form/config/types';
+import { getCarDetailsFieldConfig } from '@shared/form/config/carDetailsFields';
 import { useAuth } from '@context/AuthContext';
-import { toCarCreateDTO } from '../../../../../mappers/listingMappers';
+import { toCarCreateDTO } from '@shared/mappers/listingMappers';
 import { addCar } from '@features/seller/sell/api/CarsApi';
 import { normalizeCreateResponse } from '@shared/utils';
 import { getFriendlyApiError } from '@shared/utils';

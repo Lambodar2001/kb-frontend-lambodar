@@ -7,14 +7,14 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { MyBikeAdsStackParamList } from '@navigation/MyBikeAdsStack';
 import ListingDetailsLayout, {
   DetailSection,
-} from '../../../../../components/details/ListingDetailsLayout';
-import BottomSheet from '../../../../../components/myads/BottomSheet';
-import BottomActionBar from '../../../../../components/myadsFlowComponents/BottomActionBar';
-import BikeCardMenu from '../../../../../components/bikes/BikeCardMenu';
-import useListingDetails from '../../../../../hooks/useListingDetails';
+} from '../../components/details/ListingDetailsLayout';
+import BottomSheet from '../../components/myads/BottomSheet';
+import BottomActionBar from '../../components/myadsFlowComponents/BottomActionBar';
+import BikeCardMenu from '../../../sell/components/bike/BikeCardMenu';
+import useListingDetails from '../../hooks/useListingDetails';
 import { deleteBike, getBikeById, BikeDetail } from '@features/seller/sell/api/BikesApi';
 import { formatPriceWithNegotiable } from '@shared/utils';
-import { ACTION_BAR_HEIGHT, BOTTOM_SHEET_MENU_HEIGHT } from '../../../../../constants/listing';
+import { ACTION_BAR_HEIGHT, BOTTOM_SHEET_MENU_HEIGHT } from '@shared/constants/listing';
 
 type DetailsRouteProp = RouteProp<MyBikeAdsStackParamList, 'ProductDetails'>;
 type NavProp = NativeStackNavigationProp<MyBikeAdsStackParamList>;

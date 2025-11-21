@@ -6,7 +6,7 @@ import { Asset, launchCamera, launchImageLibrary } from 'react-native-image-pick
 
 import PhotoUploadLayout, {
   PhotoUploadProgressState,
-} from '../../../../../components/photoUpload/PhotoUploadLayout';
+} from '../../components/photoUpload/PhotoUploadLayout';
 import { useSafeAsyncState } from '@shared/hooks';
 import { SellBikeStackParamList } from '@navigation/SellBikeStack';
 import { ensureOverlayReady } from '@shared/utils';

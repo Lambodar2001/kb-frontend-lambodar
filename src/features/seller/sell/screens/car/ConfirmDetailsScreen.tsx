@@ -4,11 +4,11 @@ import { Alert } from 'react-native';
 import { CommonActions, RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import SellFlowLayout from '../../../../../screens/Sell/common/SellFlowLayout';
+import SellFlowLayout from '../common/SellFlowLayout';
 import { PrimaryButton } from '@shared/components';
 import ConfirmContactForm, {
   type ConfirmContactFormValues,
-} from '../../../../../components/sell/ConfirmContactForm';
+} from '../../components/sell/ConfirmContactForm';
 import { useSafeAsyncState } from '@shared/hooks';
 import { useAuth } from '@context/AuthContext';
 import { getConfirmDetailsCombined, type CarConfirmDetailsDTO } from '@features/seller/sell/api/CarsApi';

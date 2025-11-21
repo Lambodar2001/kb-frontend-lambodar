@@ -1,5 +1,5 @@
 // src/api/LaptopsApi/deleteLaptop.ts
-import client from '../../../../../api/client';
+import client from '@shared/api/client';
 
 export async function deleteLaptop(laptopId: number) {
   const res = await client.delete('/api/laptops/delete', {

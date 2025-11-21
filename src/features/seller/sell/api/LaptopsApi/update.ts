@@ -1,5 +1,5 @@
 // src/api/LaptopsApi/updateLaptop.ts
-import client from '../../../../../api/client';
+import client from '@shared/api/client';
 
 export async function updateLaptop(laptopId: number, data: any) {
   const res = await client.patch('/api/laptops/update', data, {

@@ -5,19 +5,19 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { MyCarAdsStackParamList } from '@navigation/MyCarAdsStack';
 import { getCarById, updateCar, UpdateCarDTO, CarDetail } from '@features/seller/sell/api/CarsApi';
-import ListingUpdateLayout from '../../../../../components/details/ListingUpdateLayout';
-import ListingUpdateLoader from '../../../../../components/details/ListingUpdateLoader';
+import ListingUpdateLayout from '../../components/details/ListingUpdateLayout';
+import ListingUpdateLoader from '../../components/details/ListingUpdateLoader';
 import { listingUpdateStyles, LISTING_UPDATE_COLORS as COLORS } from '@theme/listingUpdate';
-import useListingDetails from '../../../../../hooks/useListingDetails';
+import useListingDetails from '../../hooks/useListingDetails';
 import { getFriendlyApiError } from '@shared/utils';
 import { useAuth } from '@context/AuthContext';
 import useListingUpdateForm, {
   ListingFormNormalizers,
   ListingFormValidators,
-} from '../../../../../hooks/useListingUpdateForm';
+} from '../../hooks/useListingUpdateForm';
 import CarDetailsForm, {
   CarFormData,
-} from '../../../../../components/listingUpdate/forms/CarDetailsForm';
+} from '../../components/listingUpdate/forms/CarDetailsForm';
 import {
   buildCarYearOptions,
   CAR_BOOLEAN_OPTIONS,

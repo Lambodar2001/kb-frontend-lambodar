@@ -1,7 +1,7 @@
 
 
 // src/api/LaptopsApi/uploadLaptopImages.ts
-import client from '../../../../../api/client';
+import client from '@shared/api/client';
 
 export type RNFile = { uri: string; name: string; type: string };
 

@@ -1,4 +1,4 @@
-import client from '../../../../../api/client';
+import client from '@shared/api/client';
 
 export type LaptopConfirmDetailsDTO = {
   name: string;

@@ -1,5 +1,5 @@
 // src/api/MobilesApi/getAllMobiles.ts
-import client from '../../../../../api/client';
+import client from '@shared/api/client';
 
 export type MobileStatus = 'ACTIVE' | 'DRAFT' | 'SOLD' | string;
 

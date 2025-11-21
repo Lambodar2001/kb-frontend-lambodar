@@ -1,5 +1,5 @@
 // src/api/CarsApi/confirmDetails.ts
-import client from '../../../../../api/client';
+import client from '@shared/api/client';
 import { ConfirmContactFormValues } from '../../components/sell/ConfirmContactForm';
 
 type CarDetail = {

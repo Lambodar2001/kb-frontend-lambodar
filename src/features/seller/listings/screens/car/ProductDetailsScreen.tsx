@@ -7,14 +7,14 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { MyCarAdsStackParamList } from '@navigation/MyCarAdsStack';
 import ListingDetailsLayout, {
   DetailSection,
-} from '../../../../../components/details/ListingDetailsLayout';
-import BottomSheet from '../../../../../components/myads/BottomSheet';
-import BottomActionBar from '../../../../../components/myadsFlowComponents/BottomActionBar';
-import CarCardMenu from '../../../../../components/cars/CarCardMenu';
-import useListingDetails from '../../../../../hooks/useListingDetails';
+} from '../../components/details/ListingDetailsLayout';
+import BottomSheet from '../../components/myads/BottomSheet';
+import BottomActionBar from '../../components/myadsFlowComponents/BottomActionBar';
+import CarCardMenu from '../../../sell/components/car/CarCardMenu';
+import useListingDetails from '../../hooks/useListingDetails';
 import { deleteCar, getCarById, CarDetail } from '@features/seller/sell/api/CarsApi';
 import { formatPriceWithNegotiable } from '@shared/utils';
-import { ACTION_BAR_HEIGHT, BOTTOM_SHEET_MENU_HEIGHT } from '../../../../../constants/listing';
+import { ACTION_BAR_HEIGHT, BOTTOM_SHEET_MENU_HEIGHT } from '@shared/constants/listing';
 
 type DetailsRouteProp = RouteProp<MyCarAdsStackParamList, 'ProductDetails'>;
 type NavProp = NativeStackNavigationProp<MyCarAdsStackParamList>;
