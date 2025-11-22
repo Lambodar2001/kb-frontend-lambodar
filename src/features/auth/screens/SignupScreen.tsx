@@ -18,7 +18,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { AuthStackParamList } from '../../../navigation/AuthStack';
-import { registerUser } from '../../../api/auth';
+import { registerUser } from '@shared/api/auth';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 
 type Role = 'BUYER' | 'SELLER' | 'USER';

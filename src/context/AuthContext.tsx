@@ -1,5 +1,5 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { LoginResponse, loginUser, logoutUser } from '../api/auth';
+import { LoginResponse, loginUser, logoutUser } from '@shared/api/auth';
 import api from '@shared/api/client';
 import {
   clearSession,
@@ -18,6 +18,7 @@ type AuthState = {
   accessToken: string | null;
   userId: number | null;
   sellerId: number | null;
+  buyerId: number | null;
   roles: string[];
 };
 
@@ -36,6 +37,7 @@ const INITIAL_STATE: AuthState = {
   accessToken: null,
   userId: null,
   sellerId: null,
+  buyerId: null,
   roles: [],
 };
 
@@ -46,6 +48,7 @@ const sessionToState = (session: PersistedSession | null): AuthState => ({
   accessToken: session?.accessToken ?? null,
   userId: session?.userId ?? null,
   sellerId: session?.sellerId ?? null,
+  buyerId: session?.buyerId ?? null,
   roles: session?.roles ?? [],
 });
 
@@ -94,21 +97,43 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           : null;
 
       let sellerId: number | null = null;
-      try {
-        const sellerRes = await api.get(`/api/v1/sellers/${data.userId}`, {
-          headers: {
-            Authorization: `Bearer ${data.accessToken}`,
-          },
-        });
-        sellerId = sellerRes.data?.sellerId ?? null;
-      } catch (error) {
-        if (__DEV__) {
-          console.warn('[Auth] Failed to resolve sellerId for user', error);
-        }
-        // If user has SELLER role but no sellerId, it's a problem
-        // But don't block login - let them access profile to complete setup
-        if (data.roles.includes('SELLER')) {
+      let buyerId: number | null = null;
+
+      // Fetch seller ID if user has SELLER role
+      if (data.roles.includes('SELLER')) {
+        try {
+          const sellerRes = await api.get(`/api/v1/sellers/${data.userId}`, {
+            headers: {
+              Authorization: `Bearer ${data.accessToken}`,
+            },
+          });
+          sellerId = sellerRes.data?.sellerId ?? null;
+        } catch (error) {
+          if (__DEV__) {
+            console.warn('[Auth] Failed to resolve sellerId for user', error);
+          }
+          // If user has SELLER role but no sellerId, it's a problem
+          // But don't block login - let them access profile to complete setup
           console.warn('[Auth] User has SELLER role but no sellerId found');
+        }
+      }
+
+      // Fetch buyer ID if user has BUYER role
+      if (data.roles.includes('BUYER')) {
+        try {
+          const buyerRes = await api.get(`/api/v1/buyers/${data.userId}`, {
+            headers: {
+              Authorization: `Bearer ${data.accessToken}`,
+            },
+          });
+          buyerId = buyerRes.data?.buyerId ?? null;
+        } catch (error) {
+          if (__DEV__) {
+            console.warn('[Auth] Failed to resolve buyerId for user', error);
+          }
+          // If user has BUYER role but no buyerId, it's a problem
+          // But don't block login - let them access profile to complete setup
+          console.warn('[Auth] User has BUYER role but no buyerId found');
         }
       }
 
@@ -120,6 +145,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         userId: data.userId,
         roles: data.roles,
         sellerId,
+        buyerId,
         fingerprint: data.fingerprint ?? null,
       });
       // Keep isAuthenticating true - will be cleared after navigation completes

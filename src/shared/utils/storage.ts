@@ -5,9 +5,10 @@ import * as Keychain from 'react-native-keychain';
 const USER_ID_KEY = 'kb_user_id';
 const ROLES_KEY = 'kb_roles';
 const SELLER_ID_KEY = 'kb_seller_id';
+const BUYER_ID_KEY = 'kb_buyer_id';
 const FINGERPRINT_KEY = 'kb_device_fingerprint';
 
-const SESSION_DATA_KEYS = [USER_ID_KEY, ROLES_KEY, SELLER_ID_KEY, FINGERPRINT_KEY];
+const SESSION_DATA_KEYS = [USER_ID_KEY, ROLES_KEY, SELLER_ID_KEY, BUYER_ID_KEY, FINGERPRINT_KEY];
 
 const KEYCHAIN_SERVICE = 'kb_session_tokens';
 const KEYCHAIN_ACCOUNT = 'kb_session';
@@ -27,6 +28,7 @@ export type PersistedSession = StoredTokens & {
   userId: number;
   roles: string[];
   sellerId: number | null;
+  buyerId: number | null;
   fingerprint?: string | null;
 };
 
@@ -178,6 +180,7 @@ const buildSessionFromStorage = async (): Promise<PersistedSession | null> => {
       userId,
       roles: parseRoles(mapped[ROLES_KEY]),
       sellerId: toNumber(mapped[SELLER_ID_KEY] ?? null),
+      buyerId: toNumber(mapped[BUYER_ID_KEY] ?? null),
       fingerprint: normalizeOptionalString(mapped[FINGERPRINT_KEY]),
     };
   } catch (error) {
@@ -258,6 +261,7 @@ export const persistSession = async (session: PersistedSession) => {
     [USER_ID_KEY, String(cachedSession.userId)],
     [ROLES_KEY, JSON.stringify(sanitizedRoles)],
     [SELLER_ID_KEY, cachedSession.sellerId !== null ? String(cachedSession.sellerId) : ''],
+    [BUYER_ID_KEY, cachedSession.buyerId !== null ? String(cachedSession.buyerId) : ''],
     [FINGERPRINT_KEY, cachedSession.fingerprint ?? ''],
   ];
 
@@ -276,6 +280,7 @@ export const updateSession = async (patch: Partial<PersistedSession>) => {
     ...patch,
     roles: patch.roles ?? current.roles,
     sellerId: patch.sellerId ?? current.sellerId,
+    buyerId: patch.buyerId ?? current.buyerId,
     fingerprint: patch.fingerprint ?? current.fingerprint,
     accessToken: patch.accessToken ?? current.accessToken,
     refreshToken: patch.refreshToken ?? current.refreshToken,

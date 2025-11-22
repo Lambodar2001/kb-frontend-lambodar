@@ -2,38 +2,18 @@
 import React, { useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 // Screens
 import LoginScreen from './src/features/auth/screens/LoginScreen';
 import SignupScreen from './src/features/auth/screens/SignupScreen';
-import HomeScreen from './src/screens/HomeScreen';
-import ProductDetailsScreen from './src/features/seller/listings/screens/mobile/ProductDetailsScreen';
-import LiveBiddingScreen from './src/screens/LiveBiddingScreen';
-import ProfileScreen from './src/features/shared/profile/screens/ProfileScreen';
 
-// ✅ New entry stacks (replace old SellProductStack/MyAdsStack usage here)
-import SellEntryStack from './src/features/seller/sell/navigation/SellEntryStack';
-import MyAdsEntryStack from './src/features/seller/listings/navigation/MyAdsEntryStack';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
-
-
-import CustomTabBar from './src/components/CustomTabBar';
+// Role-based navigators
+import BuyerTabNavigator from './src/features/buyer/navigation/BuyerTabNavigator';
+import SellerTabNavigator from './src/features/seller/navigation/SellerTabNavigator';
 import { AuthProvider, useAuth } from './src/context/AuthContext';
 
 const RootStack = createNativeStackNavigator();
 const AuthStack = createNativeStackNavigator();
-const Tab = createBottomTabNavigator();
-const HomeStackNav = createNativeStackNavigator();
-
-function HomeStack() {
-  return (
-    <HomeStackNav.Navigator screenOptions={{ headerShown: false }}>
-      <HomeStackNav.Screen name="HomeScreen" component={HomeScreen} />
-      <HomeStackNav.Screen name="ProductDetailsScreen" component={ProductDetailsScreen} />
-    </HomeStackNav.Navigator>
-  );
-}
 
 function AuthStackScreen() {
   return (
@@ -45,7 +25,7 @@ function AuthStackScreen() {
 }
 
 function MainTabNavigator() {
-  const { clearAuthenticating } = useAuth();
+  const { clearAuthenticating, roles } = useAuth();
 
   // Clear authenticating state once Main screen is mounted
   useEffect(() => {
@@ -56,19 +36,22 @@ function MainTabNavigator() {
     return () => clearTimeout(timer);
   }, [clearAuthenticating]);
 
-  return (
-    <Tab.Navigator
-      tabBar={(props) => <CustomTabBar {...props} />}
-      screenOptions={{ headerShown: false }}
-    >
-      {/* ALL TABS - Show for everyone, role guards inside screens will handle access */}
-      <Tab.Screen name="Home" component={HomeStack} />
-      <Tab.Screen name="Live Bidding" component={LiveBiddingScreen} />
-      <Tab.Screen name="Sell Product" component={SellEntryStack} />
-      <Tab.Screen name="My Ads" component={MyAdsEntryStack} />
-      <Tab.Screen name="Profile" component={ProfileScreen} />
-    </Tab.Navigator>
-  );
+  // Determine which navigator to show based on user role
+  const isSeller = roles.includes('SELLER');
+  const isBuyer = roles.includes('BUYER') || roles.includes('USER');
+
+  // Sellers get SellerTabNavigator
+  if (isSeller) {
+    return <SellerTabNavigator />;
+  }
+
+  // Buyers (and default users) get BuyerTabNavigator
+  if (isBuyer) {
+    return <BuyerTabNavigator />;
+  }
+
+  // Fallback to buyer navigator if no role is set
+  return <BuyerTabNavigator />;
 }
 
 function AppNavigator() {
