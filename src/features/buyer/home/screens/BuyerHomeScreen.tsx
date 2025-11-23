@@ -239,6 +239,15 @@ const BuyerHomeScreen = () => {
   );
 
   // Categories - Mobile, Laptop, Car, Bike first
+  const handleCategoryPress = (categoryId: string) => {
+    if (categoryId === 'mobile') {
+      navigation.navigate('MobileStack' as never);
+    } else {
+      // Other categories to be implemented
+      console.log('Category pressed:', categoryId);
+    }
+  };
+
   const renderCategories = () => {
     const halfLength = Math.ceil(CATEGORIES.length / 2);
     const firstRow = CATEGORIES.slice(0, halfLength);
@@ -253,9 +262,7 @@ const BuyerHomeScreen = () => {
               styles.categoryCard,
               index === 0 && styles.categoryCardFirst,
             ]}
-            onPress={() => {
-              /* Navigate to category */
-            }}
+            onPress={() => handleCategoryPress(category.id)}
           >
             <View style={styles.categoryIconContainer}>
               <Text style={styles.categoryEmoji}>{category.image}</Text>

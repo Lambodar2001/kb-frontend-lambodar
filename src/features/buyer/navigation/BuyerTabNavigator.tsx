@@ -1,22 +1,38 @@
+// src/features/buyer/home/navigation/BuyerTabNavigator.tsx
+
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { createStackNavigator } from '@react-navigation/stack';
+import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
+import { Platform } from 'react-native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+
 import BuyerHomeScreen from '../home/screens/BuyerHomeScreen';
 import ProfileScreen from '../../shared/profile/screens/ProfileScreen';
+import BuyerMobileStack from '../browse/navigation/BuyerMobileStack';
 
-// Placeholder screens - to be implemented
+// Placeholder screens
 const SearchScreen = () => null;
 const FavoritesScreen = () => null;
 const ChatScreen = () => null;
 
 const Tab = createBottomTabNavigator();
+const Stack = createStackNavigator();
 
+const HomeStack = () => (
+  <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Screen name="BuyerHomeMain" component={BuyerHomeScreen} />
+    <Stack.Screen name="MobileStack" component={BuyerMobileStack} />
+  </Stack.Navigator>
+);
+
+// 🔥 SAME HEIGHT / WIDTH AS SELLER TAB
 const tabBarBaseStyle = {
-  backgroundColor: '#FFF',
+  backgroundColor: '#FFFFFF',
   borderTopWidth: 1,
   borderTopColor: '#E5E7EB',
-  height: 60,
-  paddingBottom: 8,
+  height: Platform.OS === 'ios' ? 88 : 65,
+  paddingBottom: Platform.OS === 'ios' ? 28 : 8,
   paddingTop: 8,
 };
 
@@ -25,65 +41,92 @@ const BuyerTabNavigator = () => {
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: '#0F5E87',
+        tabBarActiveTintColor: '#0F5E87',   // keep buyer colors
         tabBarInactiveTintColor: '#9CA3AF',
-        tabBarStyle: tabBarBaseStyle,
+        tabBarStyle: tabBarBaseStyle,       // 👈 HEIGHT MATCHED
         tabBarLabelStyle: {
-          fontSize: 12,
+          fontSize: 11,
           fontWeight: '600',
         },
       }}
     >
       <Tab.Screen
         name="BuyerHome"
-        component={BuyerHomeScreen}
-        options={{
-          tabBarLabel: 'Home',
-          tabBarIcon: ({ color, size }) => (
-            <Icon name="home" size={size} color={color} />
-          ),
+        component={HomeStack}
+        options={({ route }) => {
+          const routeName = getFocusedRouteNameFromRoute(route) ?? 'BuyerHomeMain';
+
+          return {
+            tabBarLabel: 'Home',
+            tabBarIcon: ({ color, size, focused }) => (
+              <Ionicons
+                name={focused ? 'home' : 'home-outline'}
+                size={24}
+                color={color}
+              />
+            ),
+            tabBarStyle: routeName === 'MobileStack' ? { display: 'none' } : tabBarBaseStyle,
+          };
         }}
       />
+
       <Tab.Screen
         name="Search"
         component={SearchScreen}
         options={{
           tabBarLabel: 'Search',
-          tabBarIcon: ({ color, size }) => (
-            <Icon name="magnify" size={size} color={color} />
+          tabBarIcon: ({ color, size, focused }) => (
+            <Ionicons
+              name={focused ? 'search' : 'search-outline'}
+              size={24}
+              color={color}
+            />
           ),
         }}
       />
+
       <Tab.Screen
         name="Favorites"
         component={FavoritesScreen}
         options={{
           tabBarLabel: 'Favorites',
-          tabBarIcon: ({ color, size }) => (
-            <Icon name="heart" size={size} color={color} />
+          tabBarIcon: ({ color, size, focused }) => (
+            <Ionicons
+              name={focused ? 'heart' : 'heart-outline'}
+              size={24}
+              color={color}
+            />
           ),
-          tabBarBadge: undefined, // Can show count when implemented
         }}
       />
+
       <Tab.Screen
         name="Chat"
         component={ChatScreen}
         options={{
           tabBarLabel: 'Chat',
-          tabBarIcon: ({ color, size }) => (
-            <Icon name="message-text" size={size} color={color} />
+          tabBarIcon: ({ color, size, focused }) => (
+            <Ionicons
+              name={focused ? 'chatbubbles' : 'chatbubbles-outline'}
+              size={24}
+              color={color}
+            />
           ),
-          tabBarBadge: undefined, // Can show unread count when implemented
         }}
       />
+
       <Tab.Screen
         name="Profile"
         component={ProfileScreen}
         options={{
           tabBarLabel: 'Profile',
           tabBarStyle: { display: 'none' },
-          tabBarIcon: ({ color, size }) => (
-            <Icon name="account" size={size} color={color} />
+          tabBarIcon: ({ color, size, focused }) => (
+            <Ionicons
+              name={focused ? 'person-circle' : 'person-circle-outline'}
+              size={24}
+              color={color}
+            />
           ),
         }}
       />

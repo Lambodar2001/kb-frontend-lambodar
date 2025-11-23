@@ -1,23 +1,36 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { View, StyleSheet, Platform } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+
 import SellerHomeScreen from '../home/screens/SellerHomeScreen';
 import SellEntryStack from '../sell/navigation/SellEntryStack';
 import MyAdsEntryStack from '../listings/navigation/MyAdsEntryStack';
 import ProfileScreen from '../../shared/profile/screens/ProfileScreen';
 
-// Placeholder screens - to be implemented
 const ChatScreen = () => null;
 
 const Tab = createBottomTabNavigator();
 
+// 🎨 Same color palette as Buyer tab
+const TAB_THEME = {
+  activeTint: '#0F5E87',
+  inactiveTint: '#9CA3AF',
+  background: '#FFFFFF',
+  border: '#E5E7EB',
+
+  // SELL button
+  sellOuterBg: '#FFFFFF',
+  sellMainBg: '#0F5E87',
+  sellInnerBg: '#FFFFFF',
+};
+
 const tabBarBaseStyle = {
-  backgroundColor: '#FFFFFF',
+  backgroundColor: TAB_THEME.background,
   borderTopWidth: 1,
-  borderTopColor: '#E5E7EB',
-  height: Platform.OS === 'ios' ? 88 : 65,
-  paddingBottom: Platform.OS === 'ios' ? 28 : 8,
+  borderTopColor: TAB_THEME.border,
+  height: 60,
+  paddingBottom: 8,
   paddingTop: 8,
 };
 
@@ -26,11 +39,11 @@ const SellerTabNavigator = () => {
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: '#002F34',
-        tabBarInactiveTintColor: '#6B7280',
+        tabBarActiveTintColor: TAB_THEME.activeTint,
+        tabBarInactiveTintColor: TAB_THEME.inactiveTint,
         tabBarStyle: tabBarBaseStyle,
         tabBarLabelStyle: {
-          fontSize: 11,
+          fontSize: 12,
           fontWeight: '600',
         },
       }}
@@ -40,10 +53,10 @@ const SellerTabNavigator = () => {
         component={SellerHomeScreen}
         options={{
           tabBarLabel: 'Home',
-          tabBarIcon: ({ color, focused }) => (
-            <Icon
+          tabBarIcon: ({ color, size, focused }) => (
+            <Ionicons
               name={focused ? 'home' : 'home-outline'}
-              size={24}
+              size={size}
               color={color}
             />
           ),
@@ -55,10 +68,10 @@ const SellerTabNavigator = () => {
         component={ChatScreen}
         options={{
           tabBarLabel: 'Chats',
-          tabBarIcon: ({ color, focused }) => (
-            <Icon
+          tabBarIcon: ({ color, size, focused }) => (
+            <Ionicons
               name={focused ? 'chatbubbles' : 'chatbubbles-outline'}
-              size={24}
+              size={size}
               color={color}
             />
           ),
@@ -74,7 +87,7 @@ const SellerTabNavigator = () => {
             <View style={styles.sellButtonWrapper}>
               <View style={styles.sellButton}>
                 <View style={styles.sellButtonInner}>
-                  <Icon name="add" size={26} color="#FFFFFF" style={styles.plusIcon} />
+                  <Ionicons name="add" size={28} color={TAB_THEME.activeTint} />
                 </View>
               </View>
             </View>
@@ -87,10 +100,10 @@ const SellerTabNavigator = () => {
         component={MyAdsEntryStack}
         options={{
           tabBarLabel: 'My Ads',
-          tabBarIcon: ({ color, focused }) => (
-            <Icon
-              name={focused ? 'file-tray-full' : 'file-tray-full-outline'}
-              size={24}
+          tabBarIcon: ({ color, size, focused }) => (
+            <Ionicons
+              name={focused ? 'list' : 'list-outline'}
+              size={size}
               color={color}
             />
           ),
@@ -103,10 +116,10 @@ const SellerTabNavigator = () => {
         options={{
           tabBarLabel: 'Account',
           tabBarStyle: { display: 'none' },
-          tabBarIcon: ({ color, focused }) => (
-            <Icon
+          tabBarIcon: ({ color, size, focused }) => (
+            <Ionicons
               name={focused ? 'person-circle' : 'person-circle-outline'}
-              size={24}
+              size={size}
               color={color}
             />
           ),
@@ -120,20 +133,20 @@ const styles = StyleSheet.create({
   sellButtonWrapper: {
     width: 60,
     height: 60,
-    marginTop: -50,
+    marginTop: -40,
     borderRadius: 30,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: TAB_THEME.sellOuterBg,
     justifyContent: 'center',
     alignItems: 'center',
     ...Platform.select({
       ios: {
-        shadowColor: '#002F34',
+        shadowColor: TAB_THEME.activeTint,
         shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.15,
-        shadowRadius: 8,
+        shadowOpacity: 0.22,
+        shadowRadius: 6,
       },
       android: {
-        elevation: 6,
+        elevation: 8,
       },
     }),
   },
@@ -141,22 +154,19 @@ const styles = StyleSheet.create({
     width: 56,
     height: 56,
     borderRadius: 28,
-    backgroundColor: '#23E5DB',
+    backgroundColor: TAB_THEME.sellMainBg,
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 3,
     borderColor: '#FFFFFF',
   },
   sellButtonInner: {
-    width: '100%',
-    height: '100%',
-    borderRadius: 25,
+    width: 44,
+    height: 44,
+    borderRadius: 22,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#002F34',
-  },
-  plusIcon: {
-    fontWeight: 'bold',
+    backgroundColor: TAB_THEME.sellInnerBg,
   },
 });
 
