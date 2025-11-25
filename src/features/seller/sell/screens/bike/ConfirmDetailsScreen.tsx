@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Alert } from 'react-native';
-import { CommonActions, RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import ConfirmContactForm, {
@@ -67,12 +67,20 @@ const ConfirmDetailsScreen: React.FC = () => {
   const handlePostNow = () => {
     Alert.alert('Success', 'Your bike ad has been posted!');
 
-    navigation.dispatch(
-      CommonActions.reset({
-        index: 0,
-        routes: [{ name: 'Home' }],
-      }),
-    );
+    // Navigate back to SellerHome tab
+    // Navigation hierarchy: SellBikeStack -> SellEntryStack -> SellerTabNavigator
+    const tabNavigator = navigation.getParent()?.getParent();
+
+    if (tabNavigator) {
+      // First pop to top of the SellBikeStack
+      navigation.popToTop();
+
+      // Then navigate to SellerHome tab
+      tabNavigator.navigate('SellerHome' as never);
+    } else {
+      // Fallback: just pop to top of current stack
+      navigation.popToTop();
+    }
   };
 
   return (

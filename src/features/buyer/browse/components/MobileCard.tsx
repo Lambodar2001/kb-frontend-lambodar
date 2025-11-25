@@ -1,4 +1,4 @@
-// src/features/buyer/home/components/MobileCard.tsx
+﻿// src/features/buyer/home/components/MobileCard.tsx
 import React from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';

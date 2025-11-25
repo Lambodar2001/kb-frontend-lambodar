@@ -14,6 +14,8 @@ type Props = {
   badgeText?: string;
   onPress?: () => void;
   onMenuPress?: () => void;
+  onChatPress?: () => void;
+  showChatButton?: boolean;
 };
 
 const MobileCard: React.FC<Props> = (props) => {

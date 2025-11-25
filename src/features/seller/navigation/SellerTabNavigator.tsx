@@ -7,8 +7,7 @@ import SellerHomeScreen from '../home/screens/SellerHomeScreen';
 import SellEntryStack from '../sell/navigation/SellEntryStack';
 import MyAdsEntryStack from '../listings/navigation/MyAdsEntryStack';
 import ProfileScreen from '../../shared/profile/screens/ProfileScreen';
-
-const ChatScreen = () => null;
+import SellerChatListScreen from '../chat/screens/SellerChatListScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -65,7 +64,7 @@ const SellerTabNavigator = () => {
 
       <Tab.Screen
         name="Chat"
-        component={ChatScreen}
+        component={SellerChatListScreen}
         options={{
           tabBarLabel: 'Chats',
           tabBarIcon: ({ color, size, focused }) => (

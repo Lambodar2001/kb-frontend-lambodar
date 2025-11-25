@@ -5,6 +5,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { MyMobileAdsStackParamList } from '@navigation/MyMobileAdsStack';
 import { deleteMobile, getAllMobiles } from '@features/seller/sell/api/MobilesApi';
+import { getMobileRequests } from '../../../chat/api/chatApi';
 
 import MobileCard from '../../../sell/components/mobile/MobileCard';
 import MobileCardMenu from '../../../sell/components/mobile/MobileCardMenu';
@@ -121,6 +122,46 @@ const MyMobilesAdsListScreen: React.FC = () => {
     );
   }, [selectedMobile, deleting, closeMenu]);
 
+  const handleChatPress = useCallback(async (mobile: MobileListing) => {
+    try {
+      console.log('[CHAT] Fetching requests for mobileId:', mobile.mobileId);
+      const requests = await getMobileRequests(mobile.mobileId);
+      console.log('[CHAT] Requests received:', requests);
+
+      if (!requests || requests.length === 0) {
+        Alert.alert(
+          'No Requests Yet',
+          'No buyers have sent chat requests for this mobile yet.',
+          [{ text: 'OK' }]
+        );
+        return;
+      }
+
+      console.log('[CHAT] Navigating to SellerRequestList with:', {
+        mobileId: mobile.mobileId,
+        mobileTitle: mobile.title,
+        requestCount: requests.length,
+      });
+
+      // Navigate to request list screen
+      (navigation as any).navigate('SellerRequestList', {
+        mobileId: mobile.mobileId,
+        mobileTitle: mobile.title || 'Mobile',
+      });
+    } catch (error: any) {
+      console.error('[CHAT] Failed to load requests:', error);
+      console.error('[CHAT] Error details:', {
+        message: error?.message,
+        response: error?.response?.data,
+        status: error?.response?.status,
+      });
+      Alert.alert(
+        'Error',
+        error?.response?.data?.message || error?.message || 'Failed to load chat requests. Please try again.'
+      );
+    }
+  }, [navigation]);
+
   // Cleanup on unmount
   useEffect(() => {
     return () => {
@@ -148,9 +189,11 @@ const MyMobilesAdsListScreen: React.FC = () => {
         badgeText={getStatusLabel(item.status)}
         onPress={() => navigation.navigate('ProductDetails', { mobileId: item.mobileId })}
         onMenuPress={() => openMenuFor(item)}
+        onChatPress={() => handleChatPress(item)}
+        showChatButton={true}
       />
     );
-  }, [navigation, openMenuFor]);
+  }, [navigation, openMenuFor, handleChatPress]);
 
   const listFooter =
     hasMore && loading ? <ActivityIndicator style={{ paddingVertical: 16 }} /> : null;

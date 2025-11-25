@@ -14,9 +14,12 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { useAuth } from '@context/AuthContext';
 import { MobileDetail } from '@features/seller/sell/api/MobilesApi/getById';
 import { getBuyerMobileById } from '../api/mobilesApi';
 import MobileDetailFooter from '../components/MobileDetailFooter';
+import ChatRequestModal from '../../chat/components/ChatRequestModal';
+import { createChatRequest } from '../../chat/api/chatApi';
 
 const { width } = Dimensions.get('window');
 
@@ -24,11 +27,13 @@ const MobileDetailScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const { mobileId } = route.params as { mobileId: number };
+  const { userId } = useAuth();
 
   const [mobile, setMobile] = useState<MobileDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [showChatModal, setShowChatModal] = useState(false);
 
   useEffect(() => {
     loadMobileDetails();
@@ -49,7 +54,48 @@ const MobileDetailScreen = () => {
   };
 
   const handleChatPress = () => {
-    Alert.alert('Chat', 'Chat feature will be integrated soon!');
+    setShowChatModal(true);
+  };
+
+  const handleSendChatRequest = async (message: string) => {
+    if (!userId) {
+      Alert.alert('Error', 'You must be logged in to send a chat request');
+      return;
+    }
+
+    try {
+      const response = await createChatRequest(mobileId, userId, message);
+
+      Alert.alert(
+        'Success!',
+        'Your request has been sent to the seller. You can view it in the Chats tab.',
+        [
+          {
+            text: 'View Chat',
+            onPress: () => {
+              navigation.navigate('Chat' as never, {
+                screen: 'BuyerChatThread',
+                params: {
+                  requestId: response.requestId,
+                  mobileTitle: mobile?.title,
+                  sellerId: response.sellerId,
+                },
+              } as never);
+            },
+          },
+          {
+            text: 'OK',
+            style: 'cancel',
+          },
+        ]
+      );
+    } catch (error: any) {
+      console.error('Failed to create chat request:', error);
+      Alert.alert(
+        'Failed to send request',
+        error?.errorMessage || 'Please try again later'
+      );
+    }
   };
 
   const handleMakeOfferPress = () => {
@@ -250,6 +296,14 @@ const MobileDetailScreen = () => {
       <MobileDetailFooter
         onChatPress={handleChatPress}
         onMakeOfferPress={handleMakeOfferPress}
+      />
+
+      {/* Chat Request Modal */}
+      <ChatRequestModal
+        visible={showChatModal}
+        onClose={() => setShowChatModal(false)}
+        onSend={handleSendChatRequest}
+        mobileTitle={mobile?.title}
       />
     </SafeAreaView>
   );

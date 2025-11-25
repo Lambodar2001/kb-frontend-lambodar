@@ -18,6 +18,8 @@ export type ListingCardProps = {
   badgeText?: string;             // yellow pill at top-left ("Live", "Info", etc.)
   onPress?: () => void;           // navigate to details
   onMenuPress?: () => void;       // open bottom sheet
+  onChatPress?: () => void;       // open chat requests
+  showChatButton?: boolean;       // show/hide chat button
 };
 
 const ListingCard: React.FC<ListingCardProps> = ({
@@ -29,6 +31,8 @@ const ListingCard: React.FC<ListingCardProps> = ({
   badgeText = 'Info',
   onPress,
   onMenuPress,
+  onChatPress,
+  showChatButton = false,
 }) => {
   return (
     <TouchableOpacity style={styles.card} onPress={onPress} activeOpacity={0.9}>
@@ -69,6 +73,21 @@ const ListingCard: React.FC<ListingCardProps> = ({
             {location || '—'}
           </Text>
         </View>
+
+        {/* Chat Button */}
+        {showChatButton && onChatPress && (
+          <TouchableOpacity
+            style={styles.chatButton}
+            onPress={(e) => {
+              e.stopPropagation();
+              onChatPress();
+            }}
+            activeOpacity={0.7}
+          >
+            <Icon name="message-text-outline" size={16} color="#0F5E87" />
+            <Text style={styles.chatButtonText}>Chat</Text>
+          </TouchableOpacity>
+        )}
       </View>
     </TouchableOpacity>
   );
@@ -131,4 +150,22 @@ const styles = StyleSheet.create({
   km: { fontSize: 11, color: '#888' },
   locationRow: { flexDirection: 'row', alignItems: 'center', marginTop: 4 },
   location: { marginLeft: 4, fontSize: 11, color: '#888' },
+  chatButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#0F5E87',
+    borderRadius: 6,
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+    marginTop: 8,
+  },
+  chatButtonText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#0F5E87',
+    marginLeft: 4,
+  },
 });

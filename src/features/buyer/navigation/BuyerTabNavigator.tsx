@@ -10,11 +10,12 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import BuyerHomeScreen from '../home/screens/BuyerHomeScreen';
 import ProfileScreen from '../../shared/profile/screens/ProfileScreen';
 import BuyerMobileStack from '../browse/navigation/BuyerMobileStack';
+import BuyerChatListScreen from '../chat/screens/BuyerChatListScreen';
+import BuyerChatThreadScreen from '../chat/screens/BuyerChatThreadScreen';
 
 // Placeholder screens
 const SearchScreen = () => null;
 const FavoritesScreen = () => null;
-const ChatScreen = () => null;
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -23,6 +24,13 @@ const HomeStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
     <Stack.Screen name="BuyerHomeMain" component={BuyerHomeScreen} />
     <Stack.Screen name="MobileStack" component={BuyerMobileStack} />
+  </Stack.Navigator>
+);
+
+const ChatStack = () => (
+  <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Screen name="BuyerChatList" component={BuyerChatListScreen} />
+    <Stack.Screen name="BuyerChatThread" component={BuyerChatThreadScreen} />
   </Stack.Navigator>
 );
 
@@ -102,16 +110,21 @@ const BuyerTabNavigator = () => {
 
       <Tab.Screen
         name="Chat"
-        component={ChatScreen}
-        options={{
-          tabBarLabel: 'Chat',
-          tabBarIcon: ({ color, size, focused }) => (
-            <Ionicons
-              name={focused ? 'chatbubbles' : 'chatbubbles-outline'}
-              size={24}
-              color={color}
-            />
-          ),
+        component={ChatStack}
+        options={({ route }) => {
+          const routeName = getFocusedRouteNameFromRoute(route) ?? 'BuyerChatList';
+
+          return {
+            tabBarLabel: 'Chats',
+            tabBarIcon: ({ color, size, focused }) => (
+              <Ionicons
+                name={focused ? 'chatbubbles' : 'chatbubbles-outline'}
+                size={24}
+                color={color}
+              />
+            ),
+            tabBarStyle: routeName === 'BuyerChatThread' ? { display: 'none' } : tabBarBaseStyle,
+          };
         }}
       />
 
