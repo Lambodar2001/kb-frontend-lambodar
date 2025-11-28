@@ -3,7 +3,7 @@ import { ActivityIndicator, Alert, Text, TouchableOpacity } from 'react-native';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import { MyAdsStackParamList } from '@navigation/MyAdsStack';
+import { MyAdsStackParamList } from '../../navigation/MyMobileAdsStack';
 import { getMobileById, updateMobile, UpdateMobileDTO, MobileDetail } from '@features/seller/sell/api/MobilesApi';
 import ListingUpdateLayout from '../../components/details/ListingUpdateLayout';
 import ListingUpdateLoader from '../../components/details/ListingUpdateLoader';

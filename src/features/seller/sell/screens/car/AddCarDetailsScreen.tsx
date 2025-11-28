@@ -32,7 +32,7 @@ import { toCarCreateDTO } from '@shared/mappers/listingMappers';
 import { addCar } from '@features/seller/sell/api/CarsApi';
 import { normalizeCreateResponse } from '@shared/utils';
 import { getFriendlyApiError } from '@shared/utils';
-import { SellCarStackParamList } from '@navigation/SellCarStack';
+import { SellCarStackParamList } from '../../navigation/SellCarStack';
 
 type AddCarDetailsScreenNavigationProp = NativeStackNavigationProp<
   SellCarStackParamList,

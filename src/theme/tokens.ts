@@ -1,5 +1,30 @@
 // src/theme/tokens.ts
-// Centralized design tokens shared across sell flow screens.
+// LEGACY FILE - Maintained for backward compatibility
+//
+// ⚠️ DEPRECATED: This file is kept for existing code that uses these imports.
+// For new code, please use the updated theme system:
+//
+// import { colors, typography, spacing, radius, shadows } from '@theme';
+//
+// New theme provides:
+// - Semantic color naming (primary, secondary, success, error, etc.)
+// - Expanded color palette with neutrals
+// - Typography presets (heading.h1, body.large, etc.)
+// - Spacing scale (0-17 with semantic names)
+// - Border radius system
+// - Shadow/elevation system
+//
+// This file now re-exports from the new theme system for compatibility.
+
+import { colors as newColors } from './colors';
+import { typography as newTypography } from './typography';
+import { spacingSystem as newSpacing } from './spacing';
+import { radiusSystem as newRadius } from './radius';
+import { shadows as newShadows } from './shadows';
+
+// ==========================================
+// LEGACY EXPORTS (mapped to new theme)
+// ==========================================
 
 export const spacing = {
   xs: 4,
@@ -20,20 +45,21 @@ export const radii = {
 } as const;
 
 export const colors = {
-  bg: '#F5F5F5',
-  white: '#FFFFFF',
-  text: '#333333',
-  textSecondary: '#666666',
-  textMuted: '#999999',
-  border: '#E0E0E0',
-  borderFocus: '#4A90E2',
-  primary: '#2C3E50',
-  primaryLight: '#34495E',
-  stepActive: '#4A90E2',
-  stepInactive: '#E0E0E0',
-  error: '#E74C3C',
-  success: '#27AE60',
-  overlay: 'rgba(0, 0, 0, 0.4)',
+  // Legacy colors (mapped to new theme)
+  bg: newColors.background,
+  white: newColors.surface,
+  text: newColors.textPrimary,
+  textSecondary: newColors.textSecondary,
+  textMuted: newColors.textTertiary,
+  border: newColors.border,
+  borderFocus: newColors.accent,
+  primary: newColors.primary,
+  primaryLight: newColors.primaryLight,
+  stepActive: newColors.accent,
+  stepInactive: newColors[300],
+  error: newColors.error,
+  success: newColors.success,
+  overlay: newColors.overlay,
 } as const;
 
 export const typography = {

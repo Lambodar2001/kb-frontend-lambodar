@@ -4,7 +4,7 @@ import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import LocationScreen from '../common/LocationScreen';
-import { SellMobileStackParamList } from '@navigation/SellMobileStack';
+import { SellMobileStackParamList } from '../../navigation/SellMobileStack';
 
 type MobileLocationNavProp = NativeStackNavigationProp<SellMobileStackParamList, 'MobileLocationScreen'>;
 type MobileLocationRouteProp = RouteProp<SellMobileStackParamList, 'MobileLocationScreen'>;

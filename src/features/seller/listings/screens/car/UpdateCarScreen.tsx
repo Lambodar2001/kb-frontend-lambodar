@@ -3,7 +3,7 @@ import { ActivityIndicator, Alert, Text, TouchableOpacity } from 'react-native';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import { MyCarAdsStackParamList } from '@navigation/MyCarAdsStack';
+import { MyCarAdsStackParamList } from '../../navigation/MyCarAdsStack';
 import { getCarById, updateCar, UpdateCarDTO, CarDetail } from '@features/seller/sell/api/CarsApi';
 import ListingUpdateLayout from '../../components/details/ListingUpdateLayout';
 import ListingUpdateLoader from '../../components/details/ListingUpdateLoader';

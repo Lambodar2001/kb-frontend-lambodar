@@ -13,7 +13,7 @@ import MobileCardMenu from '../../../sell/components/mobile/MobileCardMenu';
 import useListingDetails from '../../hooks/useListingDetails';
 import { deleteMobile, getMobileById, MobileDetail } from '@features/seller/sell/api/MobilesApi';
 import { getMobileRequests } from '../../../chat/api/chatApi';
-import { MyAdsStackParamList } from '@navigation/MyAdsStack';
+import { MyAdsStackParamList } from '../../navigation/MyMobileAdsStack';
 import { formatPriceWithNegotiable } from '@shared/utils';
 import { ACTION_BAR_HEIGHT, BOTTOM_SHEET_MENU_HEIGHT } from '@shared/constants/listing';
 

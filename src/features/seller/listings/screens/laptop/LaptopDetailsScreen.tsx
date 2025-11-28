@@ -13,7 +13,7 @@ import LaptopCardMenu from '../../../sell/components/laptop/LaptopCardMenu';
 import useListingDetails from '../../hooks/useListingDetails';
 import { deleteLaptop, getLaptopById, LaptopDetail } from '@features/seller/sell/api/LaptopsApi';
 import { extractLaptopPhotos } from '@features/seller/sell/api/LaptopsApi/photoNormalizer';
-import { MyLaptopAdsStackParamList } from '@navigation/MyLaptopAdsStack';
+import { MyLaptopAdsStackParamList } from '../../navigation/MyLaptopAdsStack';
 import { formatCurrency } from '@shared/utils';
 import { ACTION_BAR_HEIGHT, BOTTOM_SHEET_MENU_HEIGHT } from '@shared/constants/listing';
 

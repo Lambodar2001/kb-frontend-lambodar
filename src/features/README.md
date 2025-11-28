@@ -39,6 +39,6 @@ Each feature folder contains:
 
 ## Current Status
 
-✅ Seller features: ACTIVE (fully implemented)
-🆕 Buyer features: READY (folders created, awaiting backend APIs)
-✅ Shared features: ACTIVE (used by both roles)
+Seller features: ACTIVE (fully implemented)
+Buyer features: READY (folders created, awaiting backend APIs)
+Shared features: ACTIVE (used by both roles)

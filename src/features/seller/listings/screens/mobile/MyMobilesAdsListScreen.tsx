@@ -3,7 +3,7 @@ import { ActivityIndicator, Alert } from 'react-native';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import { MyMobileAdsStackParamList } from '@navigation/MyMobileAdsStack';
+import { MyMobileAdsStackParamList } from '../../navigation/MyMobileAdsStack';
 import { deleteMobile, getAllMobiles } from '@features/seller/sell/api/MobilesApi';
 import { getMobileRequests } from '../../../chat/api/chatApi';
 

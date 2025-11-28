@@ -32,7 +32,7 @@ import { normalizeCreateResponse, getFriendlyApiError } from '@shared/utils';
 import { toBikeCreateDTO } from '@shared/mappers/listingMappers';
 import { addBike } from '@features/seller/sell/api/BikesApi';
 import { useAuth } from '@context/AuthContext';
-import { SellBikeStackParamList } from '@navigation/SellBikeStack';
+import { SellBikeStackParamList } from '../../navigation/SellBikeStack';
 
 type AddBikeDetailsScreenNavigationProp = NativeStackNavigationProp<
   SellBikeStackParamList,

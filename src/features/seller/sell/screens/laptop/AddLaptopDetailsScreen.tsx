@@ -25,7 +25,7 @@ import { normalizeCreateResponse } from '@shared/utils';
 import { toLaptopCreateDTO } from '@shared/mappers/listingMappers';
 import { addLaptop } from '@features/seller/sell/api/LaptopsApi';
 import { useAuth } from '@context/AuthContext';
-import { SellLaptopStackParamList } from '@navigation/SellLaptopStack';
+import { SellLaptopStackParamList } from '../../navigation/SellLaptopStack';
 import { getFriendlyApiError } from '@shared/utils';
 
 type AddLaptopNav = NativeStackNavigationProp<SellLaptopStackParamList, 'AddLaptopDetails'>;

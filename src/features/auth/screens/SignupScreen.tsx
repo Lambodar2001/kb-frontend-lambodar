@@ -1,4 +1,5 @@
-import React, { useMemo, useState } from 'react';
+// src/features/auth/screens/SignupScreen.tsx
+import React, { useState, useRef } from 'react';
 import {
   View,
   Text,
@@ -11,48 +12,33 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-  useWindowDimensions,
+  Dimensions,
   ActivityIndicator,
 } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { AuthStackParamList } from '../../../navigation/AuthStack';
 import { registerUser } from '@shared/api/auth';
-import AntDesign from 'react-native-vector-icons/AntDesign';
+import { colors, typography, spacing, radius, shadows } from '@theme';
 
 type Role = 'BUYER' | 'SELLER' | 'USER';
 type SignupScreenNavigationProp = NativeStackNavigationProp<AuthStackParamList, 'Signup'>;
 
-const ROLES: Role[] = ['BUYER', 'SELLER', 'USER'];
+const { width } = Dimensions.get('window');
+
+const ROLES: Role[] = ['BUYER', 'SELLER'];
 
 const SignupScreen = () => {
   const navigation = useNavigation<SignupScreenNavigationProp>();
-  const { width } = useWindowDimensions();
-
-  const s = useMemo(() => {
-    const isTablet = width >= 768;
-    const base = Math.min(Math.max(width / 24, 12), 18);
-    return {
-      isTablet,
-      pad: isTablet ? 24 : 16,
-      gap: isTablet ? 14 : 10,
-      radius: isTablet ? 12 : 10,
-      f12: base * 0.75,
-      f14: base * 0.9,
-      f16: base * 1.0,
-      f18: base * 1.1,
-      f24: base * 1.4,
-      cardWidth: Math.min(width * 0.92, 540),
-    };
-  }, [width]);
 
   const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName]   = useState('');
+  const [lastName, setLastName] = useState('');
   const [mobileNumber, setMobileNumber] = useState('');
-  const [address, setAddress]     = useState('');
-  const [email, setEmail]         = useState('');
-  const [password, setPassword]   = useState('');
+  const [address, setAddress] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [role, setRole] = useState<Role>('BUYER');
   const [showRoleSheet, setShowRoleSheet] = useState(false);
@@ -60,6 +46,18 @@ const SignupScreen = () => {
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  // Focus states
+  const [focusedField, setFocusedField] = useState<string | null>(null);
+
+  // Input refs
+  const firstNameRef = useRef<TextInput>(null);
+  const lastNameRef = useRef<TextInput>(null);
+  const mobileRef = useRef<TextInput>(null);
+  const addressRef = useRef<TextInput>(null);
+  const emailRef = useRef<TextInput>(null);
+  const passwordRef = useRef<TextInput>(null);
+  const confirmPasswordRef = useRef<TextInput>(null);
 
   const handleSignup = async () => {
     if (!firstName || !lastName || !mobileNumber || !address || !email || !password || !confirmPassword) {
@@ -113,233 +111,250 @@ const SignupScreen = () => {
     }
   };
 
-  const roleLabel = (r: Role) => r.charAt(0) + r.slice(1).toLowerCase();
+  const roleLabel = (r: Role) => {
+    switch (r) {
+      case 'BUYER': return 'Buyer';
+      case 'SELLER': return 'Seller';
+      default: return r;
+    }
+  };
+
+  const renderInput = (
+    label: string,
+    value: string,
+    onChangeText: (text: string) => void,
+    placeholder: string,
+    iconName: string,
+    fieldName: string,
+    inputRef: React.RefObject<TextInput>,
+    nextRef?: React.RefObject<TextInput>,
+    keyboardType?: 'default' | 'email-address' | 'phone-pad',
+    autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters',
+    secureTextEntry?: boolean,
+    showToggle?: boolean,
+    onToggle?: () => void
+  ) => {
+    const isFocused = focusedField === fieldName;
+
+    return (
+      <View style={styles.inputGroup}>
+        <Text style={styles.label}>{label}</Text>
+        <Pressable
+          onPress={() => inputRef.current?.focus()}
+          style={({ pressed }) => [
+            styles.inputContainer,
+            isFocused && styles.inputContainerFocused,
+            pressed && styles.inputContainerPressed,
+          ]}
+        >
+          <Icon
+            name={iconName}
+            size={20}
+            color={isFocused ? colors.primary : colors.textTertiary}
+            style={styles.inputIcon}
+          />
+          <TextInput
+            ref={inputRef}
+            placeholder={placeholder}
+            placeholderTextColor={colors.textQuaternary}
+            style={styles.input}
+            value={value}
+            onChangeText={onChangeText}
+            keyboardType={keyboardType || 'default'}
+            autoCapitalize={autoCapitalize || 'none'}
+            secureTextEntry={secureTextEntry}
+            onFocus={() => setFocusedField(fieldName)}
+            onBlur={() => setFocusedField(null)}
+            returnKeyType={nextRef ? 'next' : 'done'}
+            onSubmitEditing={() => {
+              if (nextRef) {
+                nextRef.current?.focus();
+              } else if (fieldName === 'confirmPassword') {
+                handleSignup();
+              }
+            }}
+          />
+          {showToggle && (
+            <TouchableOpacity
+              onPress={onToggle}
+              style={styles.eyeButton}
+              activeOpacity={0.7}
+            >
+              <Icon
+                name={secureTextEntry ? 'eye-off-outline' : 'eye-outline'}
+                size={22}
+                color={colors.textTertiary}
+              />
+            </TouchableOpacity>
+          )}
+        </Pressable>
+      </View>
+    );
+  };
 
   return (
-    <SafeAreaView style={[styles.safe, { backgroundColor: '#0F5E87' }]}>
+    <SafeAreaView style={styles.container} edges={['top']}>
       <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        style={styles.flex1}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 12 : 0}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.keyboardView}
       >
         <ScrollView
-          contentContainerStyle={[styles.scrollContent, { padding: s.pad }]}
-          keyboardShouldPersistTaps="handled"
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="always"
         >
-          <View style={[styles.header, { marginBottom: s.pad * 1.25 }]}>
-            <Text style={[styles.logo, { fontSize: s.f24 }]}>LOGO</Text>
-            <Text style={[styles.appTitle, { fontSize: s.f16 }]}>Create your account</Text>
+          {/* Header with Brand */}
+          <View style={styles.header}>
+            <View style={styles.brandContainer}>
+              <View style={styles.brandLogo}>
+                <Icon name="storefront-outline" size={32} color={colors.primary} />
+              </View>
+              <View style={styles.brandTextContainer}>
+                <Text style={styles.brandTitle}>
+                  Kharido
+                  <Text style={styles.brandTitleGreen}>Becho</Text>
+                </Text>
+                <Text style={styles.brandSubtitle}>Buy & Sell Marketplace</Text>
+              </View>
+            </View>
           </View>
 
-          <View
-            style={[
-              styles.card,
-              { width: s.cardWidth, borderRadius: s.radius, padding: s.pad, gap: s.gap },
-            ]}
-          >
-            <Text style={[styles.title, { fontSize: s.f18 }]}>Sign up</Text>
-            <Text style={[styles.subtitle, { fontSize: s.f12 }]}>
-              Choose your role and enter your details.
+          {/* Welcome Section */}
+          <View style={styles.welcomeSection}>
+            <Text style={styles.welcomeTitle}>Create Account </Text>
+            <Text style={styles.welcomeSubtitle}>
+              Join our marketplace to buy and sell
             </Text>
+          </View>
 
-            <Text style={[styles.label, { fontSize: s.f12 }]}>Select role</Text>
-            <TouchableOpacity
-              activeOpacity={0.85}
-              style={[
-                styles.inputLike,
-                { borderRadius: s.radius, paddingVertical: 12, paddingHorizontal: 12 },
-              ]}
-              onPress={() => setShowRoleSheet(true)}
-            >
-              <Text style={[styles.inputLikeText, { fontSize: s.f14 }]}>{roleLabel(role)}</Text>
-              <Text style={[styles.caret, { fontSize: s.f16 }]}>▾</Text>
-            </TouchableOpacity>
-
-            <Text style={[styles.label, { fontSize: s.f12 }]}>First name</Text>
-            <TextInput
-              placeholder="Enter first name"
-              placeholderTextColor="#8C8C8C"
-              style={[styles.input, { borderRadius: s.radius, fontSize: s.f14 }]}
-              value={firstName}
-              onChangeText={setFirstName}
-              autoCapitalize="words"
-              returnKeyType="next"
-            />
-            <Text style={[styles.label, { fontSize: s.f12 }]}>Last name</Text>
-            <TextInput
-              placeholder="Enter last name"
-              placeholderTextColor="#8C8C8C"
-              style={[styles.input, { borderRadius: s.radius, fontSize: s.f14 }]}
-              value={lastName}
-              onChangeText={setLastName}
-              autoCapitalize="words"
-              returnKeyType="next"
-            />
-
-            <Text style={[styles.label, { fontSize: s.f12 }]}>Mobile number</Text>
-            <TextInput
-              placeholder="Enter mobile number"
-              placeholderTextColor="#8C8C8C"
-              style={[styles.input, { borderRadius: s.radius, fontSize: s.f14 }]}
-              value={mobileNumber}
-              onChangeText={setMobileNumber}
-              keyboardType="phone-pad"
-              returnKeyType="next"
-            />
-
-            <Text style={[styles.label, { fontSize: s.f12 }]}>Address</Text>
-            <TextInput
-              placeholder="Enter address"
-              placeholderTextColor="#8C8C8C"
-              style={[styles.input, { borderRadius: s.radius, fontSize: s.f14 }]}
-              value={address}
-              onChangeText={setAddress}
-              returnKeyType="next"
-            />
-
-            <Text style={[styles.label, { fontSize: s.f12 }]}>Email address</Text>
-            <TextInput
-              placeholder="Enter email address"
-              placeholderTextColor="#8C8C8C"
-              style={[styles.input, { borderRadius: s.radius, fontSize: s.f14 }]}
-              value={email}
-              onChangeText={setEmail}
-              keyboardType="email-address"
-              autoCapitalize="none"
-              returnKeyType="next"
-            />
-
-            <Text style={[styles.label, { fontSize: s.f12 }]}>Create password</Text>
-            <View>
-              <TextInput
-                placeholder="Create password"
-                placeholderTextColor="#8C8C8C"
-                secureTextEntry={!showPassword}
-                style={[
-                  styles.input,
-                  { borderRadius: s.radius, fontSize: s.f14, paddingRight: 40 },
-                ]}
-                value={password}
-                onChangeText={setPassword}
-                returnKeyType="next"
-              />
+          {/* Signup Card */}
+          <View style={styles.signupCard}>
+            {/* Role Selection */}
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Select your role</Text>
               <TouchableOpacity
-                style={styles.eyeIcon}
-                onPress={() => setShowPassword(!showPassword)}
+                activeOpacity={0.7}
+                style={styles.roleSelector}
+                onPress={() => setShowRoleSheet(true)}
               >
-                <AntDesign name={showPassword ? 'eyeo' : 'eye'} size={22} color="#000" />
+                <Icon name="account-circle-outline" size={20} color={colors.primary} style={styles.inputIcon} />
+                <Text style={styles.roleSelectorText}>{roleLabel(role)}</Text>
+                <Icon name="chevron-down" size={20} color={colors.textTertiary} />
               </TouchableOpacity>
             </View>
 
-            <Text style={[styles.label, { fontSize: s.f12 }]}>Confirm password</Text>
-            <View>
-              <TextInput
-                placeholder="Confirm password"
-                placeholderTextColor="#8C8C8C"
-                secureTextEntry={!showConfirmPassword}
-                style={[
-                  styles.input,
-                  { borderRadius: s.radius, fontSize: s.f14, paddingRight: 40 },
-                ]}
-                value={confirmPassword}
-                onChangeText={setConfirmPassword}
-                returnKeyType="done"
-              />
-              <TouchableOpacity
-                style={styles.eyeIcon}
-                onPress={() => setShowConfirmPassword(!showConfirmPassword)}
-              >
-                <AntDesign name={showConfirmPassword ? 'eyeo' : 'eye'} size={22} color="#000" />
-              </TouchableOpacity>
-            </View>
+            {/* Input Fields */}
+            {renderInput('First name', firstName, setFirstName, 'Enter first name', 'account-outline', 'firstName', firstNameRef, lastNameRef, 'default', 'words')}
+            {renderInput('Last name', lastName, setLastName, 'Enter last name', 'account-outline', 'lastName', lastNameRef, mobileRef, 'default', 'words')}
+            {renderInput('Mobile number', mobileNumber, setMobileNumber, 'Enter 10-digit number', 'phone-outline', 'mobile', mobileRef, addressRef, 'phone-pad')}
+            {renderInput('Address', address, setAddress, 'Enter your address', 'map-marker-outline', 'address', addressRef, emailRef)}
+            {renderInput('Email address', email, setEmail, 'Enter your email', 'email-outline', 'email', emailRef, passwordRef, 'email-address')}
+            {renderInput('Create password', password, setPassword, 'Min. 8 characters with symbol', 'lock-outline', 'password', passwordRef, confirmPasswordRef, 'default', 'none', !showPassword, true, () => setShowPassword(!showPassword))}
+            {renderInput('Confirm password', confirmPassword, setConfirmPassword, 'Re-enter password', 'lock-check-outline', 'confirmPassword', confirmPasswordRef, undefined, 'default', 'none', !showConfirmPassword, true, () => setShowConfirmPassword(!showConfirmPassword))}
 
+            {/* Signup Button */}
             <TouchableOpacity
-              style={[
-                styles.button,
-                { borderRadius: s.radius, paddingVertical: 14, opacity: submitting ? 0.7 : 1 },
-              ]}
+              style={[styles.signupButton, submitting && styles.signupButtonDisabled]}
               onPress={handleSignup}
               disabled={submitting}
+              activeOpacity={0.8}
             >
-              <Text style={[styles.buttonText, { fontSize: s.f16 }]}>
-                {submitting ? 'Creating…' : 'Create Account'}
-              </Text>
+              {submitting ? (
+                <ActivityIndicator size="small" color={colors.textInverse} />
+              ) : (
+                <>
+                  <Text style={styles.signupButtonText}>Create Account</Text>
+                  <Icon name="arrow-right" size={20} color={colors.textInverse} />
+                </>
+              )}
             </TouchableOpacity>
-
-            <Text style={[styles.footerText, { fontSize: s.f12 }]}>
-              Already have an account?{' '}
-              <Text style={styles.link} onPress={() => navigation.navigate('Login')}>
-                Login
-              </Text>
-            </Text>
           </View>
-        </ScrollView>
 
-        <Modal
-          visible={showRoleSheet}
-          transparent
-          animationType="fade"
-          onRequestClose={() => setShowRoleSheet(false)}
-        >
-          <Pressable style={styles.sheetBackdrop} onPress={() => setShowRoleSheet(false)} />
-          <View
-            style={[
-              styles.sheetContainer,
-              { padding: s.pad, borderTopLeftRadius: s.radius + 2, borderTopRightRadius: s.radius + 2 },
-            ]}
-          >
-            <Text style={[styles.sheetTitle, { fontSize: s.f16 }]}>Select Role</Text>
+          {/* Login Link */}
+          <View style={styles.loginSection}>
+            <Text style={styles.loginText}>Already have an account? </Text>
+            <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+              <Text style={styles.loginLink}>Login</Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* Bottom Spacing */}
+          <View style={styles.bottomSpacing} />
+        </ScrollView>
+      </KeyboardAvoidingView>
+
+      {/* Role Selection Modal */}
+      <Modal
+        visible={showRoleSheet}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setShowRoleSheet(false)}
+      >
+        <Pressable style={styles.modalBackdrop} onPress={() => setShowRoleSheet(false)}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Select Your Role</Text>
+              <TouchableOpacity
+                onPress={() => setShowRoleSheet(false)}
+                style={styles.modalCloseButton}
+              >
+                <Icon name="close" size={24} color={colors.textSecondary} />
+              </TouchableOpacity>
+            </View>
+
+            <Text style={styles.modalSubtitle}>
+              Choose how you want to use the marketplace
+            </Text>
+
             {ROLES.map((r) => {
               const active = r === role;
+              const roleInfo = {
+                BUYER: { icon: 'cart-outline', desc: 'Browse and purchase items' },
+                SELLER: { icon: 'store-outline', desc: 'List and sell your products' },
+              };
+
               return (
                 <TouchableOpacity
                   key={r}
-                  style={[
-                    styles.sheetItem,
-                    {
-                      borderRadius: s.radius,
-                      paddingVertical: 12,
-                      paddingHorizontal: 10,
-                      marginBottom: s.gap,
-                    },
-                    active && styles.sheetItemActive,
-                  ]}
+                  style={[styles.roleOption, active && styles.roleOptionActive]}
                   onPress={() => {
                     setRole(r);
                     setShowRoleSheet(false);
                   }}
+                  activeOpacity={0.7}
                 >
-                  <Text
-                    style={[
-                      styles.sheetItemText,
-                      { fontSize: s.f14 },
-                      active && styles.sheetItemTextActive,
-                    ]}
-                  >
-                    {roleLabel(r)}
-                  </Text>
+                  <View style={[styles.roleIconContainer, active && styles.roleIconContainerActive]}>
+                    <Icon
+                      name={roleInfo[r].icon}
+                      size={24}
+                      color={active ? colors.secondary : colors.textTertiary}
+                    />
+                  </View>
+                  <View style={styles.roleTextContainer}>
+                    <Text style={[styles.roleOptionText, active && styles.roleOptionTextActive]}>
+                      {roleLabel(r)}
+                    </Text>
+                    <Text style={styles.roleOptionDesc}>{roleInfo[r].desc}</Text>
+                  </View>
+                  {active && (
+                    <Icon name="check-circle" size={24} color={colors.secondary} />
+                  )}
                 </TouchableOpacity>
               );
             })}
-            <TouchableOpacity
-              style={[styles.sheetCancel, { paddingVertical: 12 }]}
-              onPress={() => setShowRoleSheet(false)}
-            >
-              <Text style={[styles.sheetCancelText, { fontSize: s.f14 }]}>Cancel</Text>
-            </TouchableOpacity>
           </View>
-        </Modal>
+        </Pressable>
+      </Modal>
 
-        {/* Loading Overlay */}
-        {submitting && (
-          <View style={styles.loadingOverlay}>
-            <View style={styles.loadingContent}>
-              <ActivityIndicator size="large" color="#0F5E87" />
-              <Text style={styles.loadingText}>Loading...</Text>
-            </View>
+      {/* Loading Overlay */}
+      {submitting && (
+        <View style={styles.loadingOverlay}>
+          <View style={styles.loadingContent}>
+            <ActivityIndicator size="large" color={colors.secondary} />
+            <Text style={styles.loadingText}>Creating your account...</Text>
           </View>
-        )}
-      </KeyboardAvoidingView>
+        </View>
+      )}
     </SafeAreaView>
   );
 };
@@ -347,87 +362,285 @@ const SignupScreen = () => {
 export default SignupScreen;
 
 const styles = StyleSheet.create({
-  flex1: { flex: 1 },
-  safe: { flex: 1 },
-  scrollContent: { alignItems: 'center', justifyContent: 'center', minHeight: '100%' },
-  header: { width: '100%', alignItems: 'center' },
-  logo: { color: '#fff', fontWeight: 'bold' },
-  appTitle: { color: '#EAF6FD' },
-  card: {
-    backgroundColor: '#fff',
-    width: '92%',
-    maxWidth: 560,
-    alignSelf: 'center',
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 12,
-    shadowOffset: { width: 0, height: 6 },
-    elevation: 6,
+  container: {
+    flex: 1,
+    backgroundColor: colors.background,
   },
-  title: { color: '#0F172A', fontWeight: '700' },
-  subtitle: { color: '#6B7280' },
-  label: { color: '#374151', marginTop: 4 },
-  input: {
-    borderWidth: 1,
-    borderColor: '#DFE3EA',
-    paddingHorizontal: 12,
-    paddingVertical: 12,
-    color: '#0B0F19',
-    backgroundColor: '#FBFCFE',
+  keyboardView: {
+    flex: 1,
   },
-  inputLike: {
-    borderWidth: 1,
-    borderColor: '#DFE3EA',
-    backgroundColor: '#FBFCFE',
+  scrollContent: {
+    flexGrow: 1,
+    paddingHorizontal: spacing.semantic.screenHorizontal,
+  },
+
+  // Header with Brand
+  header: {
+    paddingTop: spacing.semantic.layoutMd,
+    paddingBottom: spacing.semantic.layoutLg,
+    alignItems: 'center',
+  },
+  brandContainer: {
+    alignItems: 'center',
+  },
+  brandLogo: {
+    width: 64,
+    height: 64,
+    borderRadius: radius.semantic.brandLogo,
+    backgroundColor: colors.brandBadgeBackground,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: spacing.semantic.componentMd,
+    ...shadows.elevation.sm,
+  },
+  brandTextContainer: {
+    alignItems: 'center',
+  },
+  brandTitle: {
+    ...typography.heading.h1,
+    fontSize: 28,
+    letterSpacing: 0.5,
+  },
+  brandTitleGreen: {
+    color: colors.secondary,
+  },
+  brandSubtitle: {
+    ...typography.body.base,
+    color: colors.textTertiary,
+    marginTop: spacing[1],
+  },
+
+  // Welcome Section
+  welcomeSection: {
+    marginTop: spacing[2],
+    marginBottom: spacing.semantic.layoutMd,
+    alignItems: 'center',
+  },
+  welcomeTitle: {
+    ...typography.heading.h3,
+    fontSize: 15,
+    fontWeight: '700',
+    color: colors.textPrimary,
+    marginBottom: spacing[1],
+  },
+  welcomeSubtitle: {
+    ...typography.body.base,
+    color: colors.textTertiary,
+  },
+
+  // Signup Card
+  signupCard: {
+    backgroundColor: colors.surface,
+    borderRadius: radius.semantic.cardLarge,
+    padding: spacing.semantic.cardPaddingLarge,
+    ...shadows.semantic.card,
+  },
+
+  // Input Group
+  inputGroup: {
+    marginBottom: spacing.semantic.layoutMd,
+  },
+  label: {
+    ...typography.label.base,
+    color: colors.textSecondary,
+    marginBottom: spacing[2],
+  },
+  inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    backgroundColor: colors.searchBackground,
+    borderRadius: radius.semantic.input,
+    paddingHorizontal: spacing.semantic.inputPaddingHorizontal,
+    paddingVertical:
+      Platform.OS === 'ios'
+        ? spacing.semantic.inputPaddingVertical + 4
+        : spacing.semantic.inputPaddingVertical,
+    borderWidth: 2,
+    borderColor: 'transparent',
+  },
+  inputContainerFocused: {
+    backgroundColor: colors.surface,
+    borderColor: colors.primary,
+    ...shadows.elevation.xs,
+  },
+  inputContainerPressed: {
+    opacity: 0.9,
+  },
+  inputIcon: {
+    marginRight: spacing.semantic.inputIconGap,
+  },
+  input: {
+    flex: 1,
+    ...typography.special.searchInput,
+    padding: 0,
+  },
+  eyeButton: {
+    padding: spacing.semantic.componentSm,
+    marginLeft: spacing.semantic.componentSm,
+  },
+
+  // Role Selector
+  roleSelector: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: colors.searchBackground,
+    borderRadius: radius.semantic.input,
+    paddingHorizontal: spacing.semantic.inputPaddingHorizontal,
+    paddingVertical:
+      Platform.OS === 'ios'
+        ? spacing.semantic.inputPaddingVertical + 4
+        : spacing.semantic.inputPaddingVertical,
+    borderWidth: 2,
+    borderColor: 'transparent',
+  },
+  roleSelectorText: {
+    flex: 1,
+    ...typography.special.searchInput,
+    color: colors.textPrimary,
+  },
+
+  // Signup Button
+  signupButton: {
+    backgroundColor: colors.secondary,
+    borderRadius: radius.semantic.button,
+    paddingVertical: spacing.semantic.buttonPaddingVertical + 6,
+    paddingHorizontal: spacing.semantic.buttonPaddingHorizontal,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    ...shadows.semantic.brandButton,
+    marginTop: spacing.semantic.layoutMd,
+  },
+  signupButtonDisabled: {
+    opacity: 0.7,
+  },
+  signupButtonText: {
+    ...typography.special.button,
+    marginRight: spacing.semantic.buttonIconGap,
+  },
+
+  // Login Section
+  loginSection: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: spacing.semantic.layoutXl,
+  },
+  loginText: {
+    ...typography.body.large,
+    color: colors.textSecondary,
+  },
+  loginLink: {
+    ...typography.label.large,
+    color: colors.link,
+  },
+
+  // Bottom Spacing
+  bottomSpacing: {
+    height: spacing.semantic.bottomSpacingLarge,
+  },
+
+  // Modal
+  modalBackdrop: {
+    flex: 1,
+    backgroundColor: colors.overlay,
+    justifyContent: 'flex-end',
+  },
+  modalContent: {
+    backgroundColor: colors.surface,
+    borderTopLeftRadius: radius.semantic.modal,
+    borderTopRightRadius: radius.semantic.modal,
+    padding: spacing.semantic.layoutXl,
+    ...shadows.elevation['2xl'],
+  },
+  modalHeader: {
+    flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: spacing.semantic.componentMd,
   },
-  inputLikeText: { color: '#0B0F19' },
-  caret: { color: '#667085' },
-  button: { backgroundColor: '#0F5E87', alignItems: 'center' },
-  buttonText: { color: '#fff', fontWeight: '700' },
-  footerText: { color: '#111827', textAlign: 'center' },
-  link: { color: '#0F5E87', fontWeight: '600' },
-
-  // 👁️ eye icon for password fields
-  eyeIcon: {
-    position: 'absolute',
-    right: 12,
-    top: '50%',
-    transform: [{ translateY: -11 }],
+  modalTitle: {
+    ...typography.heading.h3,
+    color: colors.textPrimary,
+  },
+  modalCloseButton: {
+    padding: spacing.semantic.componentSm,
+  },
+  modalSubtitle: {
+    ...typography.body.base,
+    color: colors.textTertiary,
+    marginBottom: spacing.semantic.layoutLg,
   },
 
-  // Role sheet
-  sheetBackdrop: { flex: 1, backgroundColor: 'rgba(0,0,0,0.35)' },
-  sheetContainer: { backgroundColor: '#fff' },
-  sheetTitle: { fontWeight: '600', color: '#0B0F19', marginBottom: 6 },
-  sheetItem: { borderWidth: 1, borderColor: '#EEE' },
-  sheetItemActive: { backgroundColor: '#E6F3FA', borderColor: '#0F5E87' },
-  sheetItemText: { color: '#111827' },
-  sheetItemTextActive: { color: '#0F5E87', fontWeight: '700' },
-  sheetCancel: { alignItems: 'center', marginTop: 4 },
-  sheetCancelText: { color: '#0F5E87', fontWeight: '600' },
+  // Role Option
+  roleOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: colors.searchBackground,
+    borderRadius: radius.semantic.cardLarge,
+    padding: spacing.semantic.componentLg,
+    marginBottom: spacing.semantic.layoutSm,
+    borderWidth: 2,
+    borderColor: 'transparent',
+  },
+  roleOptionActive: {
+    backgroundColor: colors.successLight,
+    borderColor: colors.secondary,
+  },
+  roleIconContainer: {
+    width: 48,
+    height: 48,
+    borderRadius: radius.semantic.category,
+    backgroundColor: colors.surface,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: spacing.semantic.componentLg,
+  },
+  roleIconContainerActive: {
+    backgroundColor: colors.surface,
+  },
+  roleTextContainer: {
+    flex: 1,
+  },
+  roleOptionText: {
+    ...typography.label.large,
+    color: colors.textPrimary,
+    marginBottom: spacing[1],
+  },
+  roleOptionTextActive: {
+    color: colors.secondary,
+    fontWeight: '700',
+  },
+  roleOptionDesc: {
+    ...typography.body.small,
+    color: colors.textTertiary,
+  },
 
-  // Loading overlay
+  // Loading Overlay
   loadingOverlay: {
     position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+    backgroundColor: colors.overlayLight,
     justifyContent: 'center',
     alignItems: 'center',
     zIndex: 999,
   },
   loadingContent: {
+    backgroundColor: colors.surface,
+    paddingVertical: spacing.semantic.layoutXl,
+    paddingHorizontal: spacing.semantic.layoutXl + spacing[4],
+    borderRadius: radius.semantic.cardLarge,
     alignItems: 'center',
-    gap: 16,
+    ...shadows.elevation.xl,
+    minWidth: width * 0.5,
   },
   loadingText: {
-    fontSize: 16,
-    color: '#333',
-    fontWeight: '500',
+    ...typography.body.large,
+    color: colors.textPrimary,
+    marginTop: spacing.semantic.layoutMd,
+    fontWeight: '600',
   },
 });

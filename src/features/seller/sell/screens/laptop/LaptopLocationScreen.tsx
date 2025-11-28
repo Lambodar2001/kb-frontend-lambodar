@@ -4,7 +4,7 @@ import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import LocationScreen from '../common/LocationScreen';
-import { SellLaptopStackParamList } from '@navigation/SellLaptopStack';
+import { SellLaptopStackParamList } from '../../navigation/SellLaptopStack';
 
 type LaptopLocationNavProp = NativeStackNavigationProp<SellLaptopStackParamList, 'LaptopLocationScreen'>;
 type LaptopLocationRouteProp = RouteProp<SellLaptopStackParamList, 'LaptopLocationScreen'>;

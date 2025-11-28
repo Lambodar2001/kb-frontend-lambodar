@@ -3,7 +3,7 @@ import { ActivityIndicator, Alert } from 'react-native';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import { MyCarAdsStackParamList } from '@navigation/MyCarAdsStack';
+import { MyCarAdsStackParamList } from '../../navigation/MyCarAdsStack';
 import { deleteCar, getAllCars } from '@features/seller/sell/api/CarsApi';
 
 import CarCard from '../../../sell/components/car/CarCard';

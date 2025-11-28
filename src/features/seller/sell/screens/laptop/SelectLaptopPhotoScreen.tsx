@@ -9,7 +9,7 @@ import PhotoUploadLayout, {
   PhotoUploadProgressState,
 } from '../../components/photoUpload/PhotoUploadLayout';
 import { useSafeAsyncState } from '@shared/hooks';
-import { SellLaptopStackParamList } from '@navigation/SellLaptopStack';
+import { SellLaptopStackParamList } from '../../navigation/SellLaptopStack';
 import { ensureOverlayReady } from '@shared/utils';
 
 type SelectLaptopPhotoNav = NativeStackNavigationProp<

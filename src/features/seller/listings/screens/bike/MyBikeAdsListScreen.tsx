@@ -3,7 +3,7 @@ import { ActivityIndicator, Alert } from 'react-native';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import { MyBikeAdsStackParamList } from '@navigation/MyBikeAdsStack';
+import { MyBikeAdsStackParamList } from '../../navigation/MyBikeAdsStack';
 import { deleteBike } from '@features/seller/sell/api/BikesApi';
 import { getAllBikes, BikeItem } from '@features/seller/sell/api/BikesApi/getAllBikes';
 

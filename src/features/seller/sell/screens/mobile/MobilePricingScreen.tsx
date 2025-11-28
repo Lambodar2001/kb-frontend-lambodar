@@ -4,7 +4,7 @@ import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import PricingScreen from '../common/PricingScreen';
-import { SellMobileStackParamList } from '@navigation/SellMobileStack';
+import { SellMobileStackParamList } from '../../navigation/SellMobileStack';
 import { getMobileById } from '@features/seller/sell/api/MobilesApi';
 
 type MobilePricingNavProp = NativeStackNavigationProp<SellMobileStackParamList, 'MobilePricingScreen'>;

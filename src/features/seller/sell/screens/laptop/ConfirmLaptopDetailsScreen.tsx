@@ -11,7 +11,7 @@ import SellFlowLayout from '../common/SellFlowLayout';
 import { useSafeAsyncState } from '@shared/hooks';
 import { useAuth } from '@context/AuthContext';
 import { getLaptopConfirmDetailsCombined, type LaptopConfirmDetailsDTO } from '@features/seller/sell/api/LaptopsApi';
-import { SellLaptopStackParamList } from '@navigation/SellLaptopStack';
+import { SellLaptopStackParamList } from '../../navigation/SellLaptopStack';
 
 type ConfirmLaptopNav = NativeStackNavigationProp<SellLaptopStackParamList, 'ConfirmLaptopDetails'>;
 type ConfirmLaptopRoute = RouteProp<SellLaptopStackParamList, 'ConfirmLaptopDetails'>;

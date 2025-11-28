@@ -32,7 +32,7 @@ import { normalizeCreateResponse } from '@shared/utils';
 import { toMobileCreateDTO } from '@shared/mappers/listingMappers';
 import { addMobile } from '@features/seller/sell/api/MobilesApi';
 import { useAuth } from '@context/AuthContext';
-import { SellMobileStackParamList } from '@navigation/SellMobileStack';
+import { SellMobileStackParamList } from '../../navigation/SellMobileStack';
 import { getFriendlyApiError } from '@shared/utils';
 
 type AddMobileDetailsScreenNavigationProp = NativeStackNavigationProp<

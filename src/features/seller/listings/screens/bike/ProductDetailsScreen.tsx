@@ -4,7 +4,7 @@ import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { MyBikeAdsStackParamList } from '@navigation/MyBikeAdsStack';
+import { MyBikeAdsStackParamList } from '../../navigation/MyBikeAdsStack';
 import ListingDetailsLayout, {
   DetailSection,
 } from '../../components/details/ListingDetailsLayout';

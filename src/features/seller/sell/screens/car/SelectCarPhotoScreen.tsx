@@ -9,7 +9,7 @@ import PhotoUploadLayout, {
   PhotoUploadProgressState,
 } from '../../components/photoUpload/PhotoUploadLayout';
 import { useSafeAsyncState } from '@shared/hooks';
-import { SellCarStackParamList } from '@navigation/SellCarStack';
+import { SellCarStackParamList } from '../../navigation/SellCarStack';
 import { ensureOverlayReady } from '@shared/utils';
 import { uploadCarImages } from '@features/seller/sell/api/CarsApi/uploadImages';
 

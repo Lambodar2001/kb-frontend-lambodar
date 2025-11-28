@@ -3,7 +3,7 @@ import { Alert, View, Text, StyleSheet } from 'react-native';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import { MyAdsEntryStackParamList } from '@navigation/MyAdsEntryStack';
+import { MyAdsEntryStackParamList } from '../navigation/MyAdsEntryStack';
 import MyAdsListLayout from './common/MyAdsListLayout';
 import { useMyAdsStatusFilter } from '../hooks/useMyAdsStatusFilter';
 import { useMyAllAdsData } from '../hooks/useMyAllAdsData';

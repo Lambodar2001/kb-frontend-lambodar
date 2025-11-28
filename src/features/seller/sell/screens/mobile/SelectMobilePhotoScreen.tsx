@@ -8,7 +8,7 @@ import PhotoUploadLayout, {
   PhotoUploadProgressState,
 } from '../../components/photoUpload/PhotoUploadLayout';
 import { useSafeAsyncState } from '@shared/hooks';
-import { MobileStackParamList } from '@navigation/MobileStack';
+import { SellMobileStackParamList as MobileStackParamList } from '../../navigation/SellMobileStack';
 import { ensureOverlayReady } from '@shared/utils';
 import { uploadMobileImages } from '@features/seller/sell/api/MobilesApi';
 

@@ -11,7 +11,7 @@ import SellFlowLayout from '../common/SellFlowLayout';
 import { useSafeAsyncState } from '@shared/hooks';
 import { useAuth } from '@context/AuthContext';
 import { getConfirmDetailsCombined, type ConfirmDetailsDTO } from '@features/seller/sell/api/MobilesApi';
-import { SellProductStackParamList } from '@navigation/SellProductStack';
+import { SellMobileStackParamList as SellProductStackParamList } from '../../navigation/SellMobileStack';
 
 type ConfirmDetailsScreenNavigationProp = NativeStackNavigationProp<
   SellProductStackParamList,

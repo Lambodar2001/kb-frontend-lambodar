@@ -4,7 +4,7 @@ import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import LocationScreen from '../common/LocationScreen';
-import { SellBikeStackParamList } from '@navigation/SellBikeStack';
+import { SellBikeStackParamList } from '../../navigation/SellBikeStack';
 
 type BikeLocationNavProp = NativeStackNavigationProp<SellBikeStackParamList, 'BikeLocationScreen'>;
 type BikeLocationRouteProp = RouteProp<SellBikeStackParamList, 'BikeLocationScreen'>;

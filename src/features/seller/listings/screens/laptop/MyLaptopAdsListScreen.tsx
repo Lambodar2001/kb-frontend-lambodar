@@ -3,7 +3,7 @@ import { Alert, ImageSourcePropType } from 'react-native';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import { MyLaptopAdsStackParamList } from '@navigation/MyLaptopAdsStack';
+import { MyLaptopAdsStackParamList } from '../../navigation/MyLaptopAdsStack';
 import { deleteLaptop, getAllLaptops, LaptopItem } from '@features/seller/sell/api/LaptopsApi';
 
 import ListingCard from '../../components/myads/ListingCard';

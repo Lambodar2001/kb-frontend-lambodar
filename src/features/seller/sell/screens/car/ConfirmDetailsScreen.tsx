@@ -12,7 +12,7 @@ import ConfirmContactForm, {
 import { useSafeAsyncState } from '@shared/hooks';
 import { useAuth } from '@context/AuthContext';
 import { getConfirmDetailsCombined, type CarConfirmDetailsDTO } from '@features/seller/sell/api/CarsApi';
-import { SellCarStackParamList } from '@navigation/SellCarStack';
+import { SellCarStackParamList } from '../../navigation/SellCarStack';
 
 type ConfirmRoute = RouteProp<SellCarStackParamList, 'ConfirmDetails'>;
 type ConfirmNav = NativeStackNavigationProp<SellCarStackParamList, 'ConfirmDetails'>;

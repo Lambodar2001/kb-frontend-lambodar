@@ -8,7 +8,7 @@ import PhotoUploadLayout, {
   PhotoUploadProgressState,
 } from '../../components/photoUpload/PhotoUploadLayout';
 import { useSafeAsyncState } from '@shared/hooks';
-import { SellBikeStackParamList } from '@navigation/SellBikeStack';
+import { SellBikeStackParamList } from '../../navigation/SellBikeStack';
 import { ensureOverlayReady } from '@shared/utils';
 import { uploadBikeImages } from '@features/seller/sell/api/BikesApi';
 
