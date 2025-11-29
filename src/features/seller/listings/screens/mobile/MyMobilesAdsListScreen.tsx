@@ -173,7 +173,7 @@ const MyMobilesAdsListScreen: React.FC = () => {
 
   const renderAdCard = useCallback(({ item }: { item: MobileListing }) => {
     const primaryImage = item.images?.[0]
-      ? { uri: item.images[0] }
+      ? { uri: item.images[0].imageUrl }
       : require('@assets/icons/mobile.png');
 
     const titleText = item.title || 'Untitled Mobile';

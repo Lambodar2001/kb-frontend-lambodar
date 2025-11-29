@@ -67,7 +67,7 @@ export const myAdEntityAdapters: Record<MyAdEntityType, EntityAdapter<any>> = {
     mapToListItem: (item: MobileItem): MyAdListItem<MobileItem> => {
       const price = typeof item.price === 'number' ? item.price : 0;
       const imageSource =
-        ensureImageSource(item.images?.[0]) ?? MOBILE_PLACEHOLDER;
+        ensureImageSource(item.images?.[0]?.imageUrl) ?? MOBILE_PLACEHOLDER;
       const createdAt =
         parseTimestamp(item.createdAt) ??
         parseTimestamp(item.updatedAt) ??

@@ -103,7 +103,11 @@ const MyAdsListLayout = <ItemT,>({
               style={[styles.tab, isSelected && styles.tabSelected]}
               onPress={() => onTabChange(tab)}
             >
-              <Text style={[styles.tabText, isSelected && styles.tabTextSelected]}>
+              <Text
+                style={[styles.tabText, isSelected && styles.tabTextSelected]}
+                numberOfLines={1}
+                ellipsizeMode="tail"
+              >
                 {tab} {tabLabelSuffix}
               </Text>
             </TouchableOpacity>
@@ -156,10 +160,22 @@ const styles = StyleSheet.create({
   },
   headerTitle: { fontSize: 18, fontWeight: '600', color: '#000' },
   headerTrailing: { width: 24, minHeight: 24, alignItems: 'flex-end', justifyContent: 'center' },
-  tabRow: { flexDirection: 'row', justifyContent: 'center', gap: 10, paddingVertical: 12 },
-  tab: { paddingVertical: 8, paddingHorizontal: 16, borderRadius: 20, backgroundColor: '#F0F0F0' },
+  tabRow: { flexDirection: 'row', justifyContent: 'center', gap: 10, paddingVertical: 12, paddingHorizontal: 10 },
+  tab: {
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 20,
+    backgroundColor: '#F0F0F0',
+    flex: 1,
+    maxWidth: 130,
+    alignItems: 'center',
+  },
   tabSelected: { backgroundColor: '#216DBD' },
-  tabText: { color: '#333', fontSize: 13 },
+  tabText: {
+    color: '#333',
+    fontSize: 12,
+    textAlign: 'center',
+  },
   tabTextSelected: { color: '#fff', fontWeight: '500' },
   initialLoader: { paddingTop: 40 },
   emptyState: { padding: 24, alignItems: 'center' },

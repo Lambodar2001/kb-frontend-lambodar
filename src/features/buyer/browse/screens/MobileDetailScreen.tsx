@@ -120,7 +120,7 @@ const MobileDetailScreen = () => {
 
   const renderImageCarousel = () => {
     const images = mobile?.images && mobile.images.length > 0
-      ? mobile.images
+      ? mobile.images.map(img => img.imageUrl)
       : ['https://via.placeholder.com/600x400?text=No+Image'];
 
     return (

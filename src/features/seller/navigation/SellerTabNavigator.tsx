@@ -11,7 +11,7 @@ import SellerChatListScreen from '../chat/screens/SellerChatListScreen';
 
 const Tab = createBottomTabNavigator();
 
-// 🎨 Same color palette as Buyer tab
+// Same color palette as Buyer tab
 const TAB_THEME = {
   activeTint: '#0F5E87',
   inactiveTint: '#9CA3AF',

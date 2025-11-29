@@ -1,5 +1,6 @@
 // src/api/mobiles/productdetails.ts
 import client from '@shared/api/client';
+import { MobileImage } from './getAll';
 
 export type MobileDetail = {
   mobileId: number;
@@ -16,7 +17,7 @@ export type MobileDetail = {
   createdAt?: string;
   updatedAt?: string | null;
   sellerId?: number;
-  images?: string[];
+  images?: MobileImage[];
 };
 
 export async function getMobileById(mobileId: number) {

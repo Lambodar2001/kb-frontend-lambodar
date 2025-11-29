@@ -3,23 +3,25 @@ import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { SellEntryStackParamList } from '../navigation/SellEntryStack';
+
 import { useAuth } from '@context/AuthContext';
 import AppHeader from '@shared/components/headers/AppHeader';
-import SellCategoryGrid from '../components/SellCategoryGrid';
-import { SELL_CATEGORIES, SellEntityType } from '../config/sellCategoryConfig';
+import MyAdsCategoryGrid from '../components/myads/MyAdsCategoryGrid';
+import { MY_ADS_CATEGORIES } from '../config/categoryConfig';
+import { MyAdsEntryStackParamList } from '../navigation/MyAdsEntryStack';
+import { MyAdEntityType } from './common/types';
 
-type Nav = NativeStackNavigationProp<SellEntryStackParamList, 'SellProduct'>;
+type NavigationProp = NativeStackNavigationProp<MyAdsEntryStackParamList>;
 
-const ENTITY_STACK_MAP: Record<SellEntityType, { stack: keyof SellEntryStackParamList; screen: string }> = {
-  mobile: { stack: 'SellMobileStack', screen: 'AddMobileDetails' },
-  laptop: { stack: 'SellLaptopStack', screen: 'AddLaptopDetails' },
-  car: { stack: 'SellCarStack', screen: 'AddCarDetails' },
-  bike: { stack: 'SellBikeStack', screen: 'AddBikeDetails' },
+const ENTITY_STACK_MAP: Record<MyAdEntityType, keyof MyAdsEntryStackParamList> = {
+  mobile: 'MyMobileAdsStack',
+  laptop: 'MyLaptopAdsStack',
+  car: 'MyCarAdsStack',
+  bike: 'MyBikeAdsStack',
 };
 
-const SellProductScreen: React.FC = () => {
-  const navigation = useNavigation<Nav>();
+const MyAdsCategorySelectionScreen: React.FC = () => {
+  const navigation = useNavigation<NavigationProp>();
   const { roles, sellerId } = useAuth();
 
   // Role guard: Only sellers with valid sellerId can access this screen
@@ -37,43 +39,38 @@ const SellProductScreen: React.FC = () => {
   }
 
   const handleCategoryPress = useCallback(
-    (categoryId: SellEntityType) => {
-      const route = ENTITY_STACK_MAP[categoryId];
-      if (route) {
-        navigation.navigate(route.stack as never, { screen: route.screen } as never);
+    (categoryId: MyAdEntityType) => {
+      const stackName = ENTITY_STACK_MAP[categoryId];
+      if (stackName) {
+        navigation.navigate(stackName);
       }
     },
     [navigation]
   );
 
   return (
-    <View style={styles.container}>
-      <SafeAreaView style={styles.safeArea} edges={['top']}>
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.scrollContent}
-        >
-          {/* Header */}
-          <AppHeader showLocation={true} location="Pune" />
+    <SafeAreaView style={styles.container} edges={['top']}>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        {/* Header */}
+        <AppHeader showLocation={true} location="Pune" />
 
-          {/* Title Section */}
-          <View style={styles.titleSection}>
-            <Text style={styles.title}>Add Product</Text>
-            <Text style={styles.subtitle}>
-              Select a category to list your product
-            </Text>
-          </View>
+        {/* Title Section */}
+        <View style={styles.titleSection}>
+          <Text style={styles.title}>My Ads</Text>
+          <Text style={styles.subtitle}>
+            Select a category to view your listings
+          </Text>
+        </View>
 
-          {/* Category Grid */}
-          <SellCategoryGrid
-            categories={SELL_CATEGORIES}
-            onCategoryPress={handleCategoryPress}
-          />
+        {/* Category Grid */}
+        <MyAdsCategoryGrid
+          categories={MY_ADS_CATEGORIES}
+          onCategoryPress={handleCategoryPress}
+        />
 
-          <View style={styles.bottomSpacing} />
-        </ScrollView>
-      </SafeAreaView>
-    </View>
+        <View style={styles.bottomSpacing} />
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
@@ -81,13 +78,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F7F8F9',
-  },
-  safeArea: {
-    flex: 1,
-  },
-  scrollContent: {
-    flexGrow: 1,
-    paddingBottom: 20,
   },
   titleSection: {
     paddingHorizontal: 20,
@@ -134,4 +124,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SellProductScreen;
+export default MyAdsCategorySelectionScreen;

@@ -3,6 +3,11 @@ import client from '@shared/api/client';
 
 export type MobileStatus = 'ACTIVE' | 'DRAFT' | 'SOLD' | string;
 
+export type MobileImage = {
+  imageId: number;
+  imageUrl: string;
+};
+
 export type MobileItem = {
   mobileId: number;
   title: string;
@@ -18,7 +23,7 @@ export type MobileItem = {
   createdAt?: string;
   updatedAt?: string | null;
   sellerId?: number;
-  images?: string[];
+  images?: MobileImage[];
 };
 
 export type PageResponse<T> = {

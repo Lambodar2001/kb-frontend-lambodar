@@ -1,4 +1,5 @@
 // src/types/listing.ts
+import { MobileImage } from '@features/seller/sell/api/MobilesApi/getAll';
 
 /**
  * Base listing status type
@@ -67,5 +68,5 @@ export interface MobileListing extends BaseListing {
   model?: string;
   color?: string;
   yearOfPurchase?: number;
-  images?: string[];
+  images?: MobileImage[];
 }

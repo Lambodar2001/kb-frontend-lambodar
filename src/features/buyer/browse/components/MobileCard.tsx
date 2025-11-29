@@ -14,7 +14,7 @@ interface MobileCardProps {
 
 const MobileCard: React.FC<MobileCardProps> = ({ mobile, onPress }) => {
   const imageUrl = mobile.images && mobile.images.length > 0
-    ? mobile.images[0]
+    ? mobile.images[0].imageUrl
     : 'https://via.placeholder.com/300x300?text=No+Image';
 
   return (

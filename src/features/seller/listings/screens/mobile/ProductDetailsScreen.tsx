@@ -38,9 +38,9 @@ const ProductDetailsScreen: React.FC = () => {
   });
 
   const images = useMemo(() => {
-    return (data?.images || []).filter(
-      (uri): uri is string => typeof uri === 'string' && uri.trim().length > 0
-    );
+    return (data?.images || [])
+      .map(img => img.imageUrl)
+      .filter((uri): uri is string => typeof uri === 'string' && uri.trim().length > 0);
   }, [data?.images]);
 
   const titleText = useMemo(() => {
