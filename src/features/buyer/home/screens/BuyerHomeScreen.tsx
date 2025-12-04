@@ -17,6 +17,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useAuth } from '@context/AuthContext';
 import secondHandBikeImage from '@assets/buyerScreen/second-hand-bike.jpeg';
 import hondaBikeImage from '@assets/buyerScreen/honda-bike.jpeg';
+import { getAllEntityConfigs } from '../../browse/config/entityConfigs';
 
 const { width } = Dimensions.get('window');
 const CARD_WIDTH = (width - 48) / 2;
@@ -240,10 +241,18 @@ const BuyerHomeScreen = () => {
 
   // Categories - Mobile, Laptop, Car, Bike first
   const handleCategoryPress = (categoryId: string) => {
-    if (categoryId === 'mobile') {
-      navigation.navigate('MobileStack' as never);
+    // Get all entity configurations
+    const entityConfigs = getAllEntityConfigs();
+
+    // Find matching entity config for this category
+    const entityConfig = entityConfigs.find(config => config.type === categoryId);
+
+    if (entityConfig) {
+      // Navigate to the entity's stack using the config
+      navigation.navigate(entityConfig.stackName as never);
     } else {
-      console.log('Category pressed:', categoryId);
+      // Category not yet implemented
+      console.log('Category not yet implemented:', categoryId);
     }
   };
 

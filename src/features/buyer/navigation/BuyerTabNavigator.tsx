@@ -9,10 +9,15 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import BuyerHomeScreen from '../home/screens/BuyerHomeScreen';
 import ProfileScreen from '../../shared/profile/screens/ProfileScreen';
-import BuyerMobileStack from '../browse/navigation/BuyerMobileStack';
 import BuyerChatsScreen from '../chat/screens/BuyerChatsScreen';
 import BuyerChatListScreen from '../chat/screens/BuyerChatListScreen';
 import BuyerChatThreadScreen from '../chat/screens/BuyerChatThreadScreen';
+import {
+  mobileConfig,
+  carConfig,
+  laptopConfig,
+} from '../browse/config/entityConfigs';
+import { createCatalogStack } from '../browse/navigation/createCatalogStack';
 
 // Placeholder screens
 const SearchScreen = () => null;
@@ -21,10 +26,17 @@ const FavoritesScreen = () => null;
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
+// Create catalog stack navigators for each entity
+const MobileStack = createCatalogStack(mobileConfig);
+const CarStack = createCatalogStack(carConfig);
+const LaptopStack = createCatalogStack(laptopConfig);
+
 const HomeStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
     <Stack.Screen name="BuyerHomeMain" component={BuyerHomeScreen} />
-    <Stack.Screen name="MobileStack" component={BuyerMobileStack} />
+    <Stack.Screen name="MobileStack" component={MobileStack} />
+    <Stack.Screen name="CarStack" component={CarStack} />
+    <Stack.Screen name="LaptopStack" component={LaptopStack} />
   </Stack.Navigator>
 );
 
@@ -66,6 +78,10 @@ const BuyerTabNavigator = () => {
         options={({ route }) => {
           const routeName = getFocusedRouteNameFromRoute(route) ?? 'BuyerHomeMain';
 
+          // Hide tab bar when viewing any entity stack
+          const entityStacks = ['MobileStack', 'CarStack', 'LaptopStack'];
+          const hideTabBar = entityStacks.includes(routeName);
+
           return {
             tabBarLabel: 'Home',
             tabBarIcon: ({ color, size, focused }) => (
@@ -75,7 +91,7 @@ const BuyerTabNavigator = () => {
                 color={color}
               />
             ),
-            tabBarStyle: routeName === 'MobileStack' ? { display: 'none' } : tabBarBaseStyle,
+            tabBarStyle: hideTabBar ? { display: 'none' } : tabBarBaseStyle,
           };
         }}
       />
