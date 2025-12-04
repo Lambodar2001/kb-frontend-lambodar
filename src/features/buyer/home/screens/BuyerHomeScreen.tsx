@@ -243,7 +243,6 @@ const BuyerHomeScreen = () => {
     if (categoryId === 'mobile') {
       navigation.navigate('MobileStack' as never);
     } else {
-      // Other categories to be implemented
       console.log('Category pressed:', categoryId);
     }
   };

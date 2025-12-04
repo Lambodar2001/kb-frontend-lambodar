@@ -19,7 +19,8 @@ import { MobileDetail } from '@features/seller/sell/api/MobilesApi/getById';
 import { getBuyerMobileById } from '../api/mobilesApi';
 import MobileDetailFooter from '../components/MobileDetailFooter';
 import ChatRequestModal from '../../chat/components/ChatRequestModal';
-import { createChatRequest } from '../../chat/api/chatApi';
+import { useCreateBooking } from '@core/booking/hooks';
+import { MobileEntity } from '@core/booking/types/entity.types';
 
 const { width } = Dimensions.get('window');
 
@@ -34,6 +35,8 @@ const MobileDetailScreen = () => {
   const [error, setError] = useState<string | null>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showChatModal, setShowChatModal] = useState(false);
+
+  const { createBooking, loading: creatingBooking } = useCreateBooking<MobileEntity>('mobile');
 
   useEffect(() => {
     loadMobileDetails();
@@ -64,7 +67,7 @@ const MobileDetailScreen = () => {
     }
 
     try {
-      const response = await createChatRequest(mobileId, userId, message);
+      const response = await createBooking(mobileId, userId, message);
 
       Alert.alert(
         'Success!',
@@ -76,7 +79,7 @@ const MobileDetailScreen = () => {
               navigation.navigate('Chat' as never, {
                 screen: 'BuyerChatThread',
                 params: {
-                  requestId: response.requestId,
+                  requestId: response.bookingId || response.requestId,
                   mobileTitle: mobile?.title,
                   sellerId: response.sellerId,
                 },
@@ -90,10 +93,10 @@ const MobileDetailScreen = () => {
         ]
       );
     } catch (error: any) {
-      console.error('Failed to create chat request:', error);
+      console.error('Failed to create booking:', error);
       Alert.alert(
         'Failed to send request',
-        error?.errorMessage || 'Please try again later'
+        error?.message || 'Please try again later'
       );
     }
   };
@@ -303,6 +306,7 @@ const MobileDetailScreen = () => {
         visible={showChatModal}
         onClose={() => setShowChatModal(false)}
         onSend={handleSendChatRequest}
+        loading={creatingBooking}
         mobileTitle={mobile?.title}
       />
     </SafeAreaView>

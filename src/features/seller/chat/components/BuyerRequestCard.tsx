@@ -3,11 +3,11 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { ChatRequest, RequestStatus } from '../types';
-import { getSellerStatusConfig } from '@shared/utils/chatStatus';
+import { Booking } from '@core/booking/types/booking.types';
+import { getSellerStatusConfig } from '@core/booking/utils';
 
 interface BuyerRequestCardProps {
-  request: ChatRequest;
+  request: Booking;
   onPress: () => void;
 }
 

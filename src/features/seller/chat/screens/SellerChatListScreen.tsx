@@ -1,4 +1,5 @@
 // src/features/seller/chat/screens/SellerChatListScreen.tsx
+// Placeholder screen - Seller accesses chats from My Ads screen
 
 import React from 'react';
 import {
@@ -21,16 +22,24 @@ const SellerChatListScreen = () => {
         </TouchableOpacity>
       </View>
 
-      {/* Coming Soon / Empty State */}
+      {/* Info Message */}
       <View style={styles.emptyContainer}>
         <View style={styles.emptyIconContainer}>
           <Icon name="chat-outline" size={64} color="#CBD5E1" />
         </View>
-        <Text style={styles.emptyTitle}>Chat requests will appear here</Text>
+        <Text style={styles.emptyTitle}>View chats from My Ads</Text>
         <Text style={styles.emptySubtitle}>
-          When buyers send you messages about your listings,{'\n'}
-          they'll show up here
+          To access buyer chat requests,{'\n'}
+          go to My Ads and tap the chat icon{'\n'}
+          on any mobile listing
         </Text>
+
+        <View style={styles.infoCard}>
+          <Icon name="information-outline" size={20} color="#0F5E87" />
+          <Text style={styles.infoText}>
+            Each mobile has its own chat requests
+          </Text>
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -60,7 +69,6 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: '700',
     color: '#002F34',
-    letterSpacing: 0.3,
   },
   headerIconButton: {
     width: 40,
@@ -97,7 +105,22 @@ const styles = StyleSheet.create({
     color: '#6B7280',
     textAlign: 'center',
     lineHeight: 22,
-    marginBottom: 32,
+    marginBottom: 24,
+  },
+  infoCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#E5F3F5',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderRadius: 8,
+    marginTop: 16,
+  },
+  infoText: {
+    fontSize: 14,
+    color: '#0F5E87',
+    marginLeft: 8,
+    fontWeight: '500',
   },
 });
 

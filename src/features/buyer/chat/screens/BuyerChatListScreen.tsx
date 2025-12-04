@@ -1,6 +1,6 @@
 // src/features/buyer/chat/screens/BuyerChatListScreen.tsx
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import {
   View,
   Text,
@@ -12,102 +12,103 @@ import {
   Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useAuth } from '@context/AuthContext';
-import { getBuyerChatRequests } from '../api/chatApi';
-import { ChatRequest } from '../types';
+import { useBookingList } from '@core/booking/hooks';
+import { EntityType, MobileEntity } from '@core/booking/types/entity.types';
+import { Booking } from '@core/booking/types/booking.types';
 import ChatRequestCard from '../components/ChatRequestCard';
 
 type FilterType = 'all' | 'active' | 'completed';
 
+interface RouteParams {
+  entityType: EntityType;
+  entityName: string;
+}
+
 const BuyerChatListScreen = () => {
   const navigation = useNavigation();
+  const route = useRoute<RouteProp<{ params: RouteParams }, 'params'>>();
   const { buyerId } = useAuth();
 
-  const [chatRequests, setChatRequests] = useState<ChatRequest[]>([]);
-  const [filteredRequests, setFilteredRequests] = useState<ChatRequest[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
+  // ========================================
+  // MOBILE BOOKING BLOCK - Get params from route
+  // ========================================
+  const { entityType = 'mobile', entityName = 'Mobile' } = route.params || {};
+
   const [selectedFilter, setSelectedFilter] = useState<FilterType>('all');
-  const [error, setError] = useState<string | null>(null);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
 
-  // Load chat requests
-  const loadChatRequests = useCallback(async () => {
-    if (!buyerId) {
-      setError('Buyer profile not found. Please complete your profile.');
-      setLoading(false);
-      return;
+  // Use generic booking hook with dynamic entityType
+  const { bookings, loading, error: apiError, refresh } = useBookingList<MobileEntity>({
+    entityType,
+    buyerId: buyerId || 0,
+    enabled: !!buyerId,
+  });
+
+  const [refreshing, setRefreshing] = useState(false);
+  const error = apiError || (!buyerId ? 'Buyer profile not found. Please complete your profile.' : null);
+
+  // Mark initial load as complete once loading is done
+  useEffect(() => {
+    if (!loading) {
+      setIsInitialLoad(false);
+    }
+  }, [loading]);
+
+  // Calculate filtered requests during render using useMemo
+  const filteredRequests = useMemo(() => {
+    if (!bookings || bookings.length === 0) {
+      return [];
     }
 
-    try {
-      setError(null);
-      const requests = await getBuyerChatRequests(buyerId);
+    // Sort by latest activity (most recent first)
+    const sortedBookings = [...bookings].sort((a, b) => {
+      const aTime = a.updatedAt || a.createdAt;
+      const bTime = b.updatedAt || b.createdAt;
+      return new Date(bTime).getTime() - new Date(aTime).getTime();
+    });
 
-      // Sort by latest activity (most recent first)
-      const sortedRequests = requests.sort((a, b) => {
-        const aTime = a.updatedAt || a.createdAt;
-        const bTime = b.updatedAt || b.createdAt;
-        return new Date(bTime).getTime() - new Date(aTime).getTime();
-      });
+    let filtered = sortedBookings;
 
-      setChatRequests(sortedRequests);
-      filterRequests(sortedRequests, selectedFilter);
-    } catch (err: any) {
-      console.error('[CHAT_LIST] Error loading chat requests:', err);
-      setError(err?.errorMessage || 'Failed to load chats. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  }, [buyerId, selectedFilter]);
-
-  // Filter requests based on selected filter
-  const filterRequests = (requests: ChatRequest[], filter: FilterType) => {
-    let filtered = requests;
-
-    switch (filter) {
+    switch (selectedFilter) {
       case 'active':
-        filtered = requests.filter(
+        filtered = sortedBookings.filter(
           (req) => req.status === 'PENDING' || req.status === 'IN_NEGOTIATION'
         );
         break;
       case 'completed':
-        filtered = requests.filter(
+        filtered = sortedBookings.filter(
           (req) => req.status === 'COMPLETED' || req.status === 'REJECTED' || req.status === 'ACCEPTED'
         );
         break;
       case 'all':
       default:
-        filtered = requests;
+        filtered = sortedBookings;
         break;
     }
 
-    setFilteredRequests(filtered);
-  };
+    return filtered as Booking<MobileEntity>[];
+  }, [bookings, selectedFilter]);
 
   // Handle filter change
   const handleFilterChange = (filter: FilterType) => {
     setSelectedFilter(filter);
-    filterRequests(chatRequests, filter);
   };
-
-  // Initial load
-  useEffect(() => {
-    loadChatRequests();
-  }, []);
 
   // Refresh handler
   const onRefresh = async () => {
     setRefreshing(true);
-    await loadChatRequests();
+    await refresh();
     setRefreshing(false);
   };
 
   // Handle chat request press
-  const handleChatPress = (request: ChatRequest) => {
+  const handleChatPress = (request: any) => {
     navigation.navigate('BuyerChatThread' as never, {
-      requestId: request.requestId,
-      mobileTitle: `Mobile Request #${request.mobileId}`,
+      requestId: request.bookingId || request.requestId,
+      mobileTitle: `Mobile Request #${request.entityId}`,
       sellerId: request.sellerId,
     } as never);
   };
@@ -184,7 +185,7 @@ const BuyerChatListScreen = () => {
       <Text style={styles.emptySubtitle}>{error}</Text>
       <TouchableOpacity
         style={styles.retryButton}
-        onPress={loadChatRequests}
+        onPress={onRefresh}
         activeOpacity={0.8}
       >
         <Icon name="refresh" size={20} color="#FFFFFF" style={{ marginRight: 8 }} />
@@ -194,11 +195,11 @@ const BuyerChatListScreen = () => {
   );
 
   // Render list item
-  const renderChatItem = ({ item }: { item: ChatRequest }) => (
+  const renderChatItem = ({ item }: { item: Booking<MobileEntity> }) => (
     <ChatRequestCard
       request={item}
       onPress={() => handleChatPress(item)}
-      mobileTitle={`Mobile Request #${item.mobileId}`}
+      mobileTitle={`Mobile Request #${item.entityId}`}
       // TODO: Add mobile details when API provides them
       // mobileTitle={item.mobileTitle}
       // mobileImage={item.mobileImage}
@@ -206,12 +207,16 @@ const BuyerChatListScreen = () => {
     />
   );
 
-  // Loading state
-  if (loading) {
+  // Loading state - show loading on initial load only
+  if (isInitialLoad && loading) {
     return (
       <SafeAreaView style={styles.container} edges={['top']}>
         <View style={styles.header}>
-          <Text style={styles.headerTitle}>Chats</Text>
+          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+            <Icon name="arrow-left" size={24} color="#002F34" />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>{entityName} Chats</Text>
+          <View style={styles.headerIconButton} />
         </View>
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#0F5E87" />
@@ -225,7 +230,10 @@ const BuyerChatListScreen = () => {
     <SafeAreaView style={styles.container} edges={['top']}>
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Chats</Text>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+          <Icon name="arrow-left" size={24} color="#002F34" />
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>{entityName} Chats</Text>
         <TouchableOpacity style={styles.headerIconButton} activeOpacity={0.7}>
           <Icon name="magnify" size={24} color="#002F34" />
         </TouchableOpacity>
@@ -241,7 +249,7 @@ const BuyerChatListScreen = () => {
         <FlatList
           data={filteredRequests}
           renderItem={renderChatItem}
-          keyExtractor={(item) => item.requestId.toString()}
+          keyExtractor={(item) => item.bookingId.toString()}
           contentContainerStyle={
             filteredRequests.length === 0 ? styles.emptyList : styles.listContent
           }
@@ -286,6 +294,10 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#002F34',
     letterSpacing: 0.3,
+  },
+  backButton: {
+    padding: 4,
+    marginRight: 12,
   },
   headerIconButton: {
     width: 40,

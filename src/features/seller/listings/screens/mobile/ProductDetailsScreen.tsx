@@ -12,7 +12,6 @@ import BottomActionBar from '../../components/myadsFlowComponents/BottomActionBa
 import MobileCardMenu from '../../../sell/components/mobile/MobileCardMenu';
 import useListingDetails from '../../hooks/useListingDetails';
 import { deleteMobile, getMobileById, MobileDetail } from '@features/seller/sell/api/MobilesApi';
-import { getMobileRequests } from '../../../chat/api/chatApi';
 import { MyAdsStackParamList } from '../../navigation/MyMobileAdsStack';
 import { formatPriceWithNegotiable } from '@shared/utils';
 import { ACTION_BAR_HEIGHT, BOTTOM_SHEET_MENU_HEIGHT } from '@shared/constants/listing';
@@ -133,34 +132,13 @@ const ProductDetailsScreen: React.FC = () => {
     );
   }, [data, deleting, mobileId, navigation]);
 
-  const handleChatPress = useCallback(async () => {
-    try {
-      console.log('[CHAT_DETAILS] Fetching requests for mobileId:', mobileId);
-      const requests = await getMobileRequests(mobileId);
-      console.log('[CHAT_DETAILS] Requests received:', requests);
-
-      if (!requests || requests.length === 0) {
-        Alert.alert(
-          'No Requests Yet',
-          'No buyers have sent chat requests for this mobile yet.',
-          [{ text: 'OK' }]
-        );
-        return;
-      }
-
-      console.log('[CHAT_DETAILS] Navigating to SellerRequestList');
-      // Navigate to request list screen
-      (navigation as any).navigate('SellerRequestList', {
-        mobileId: mobileId,
-        mobileTitle: titleText,
-      });
-    } catch (error: any) {
-      console.error('[CHAT_DETAILS] Failed to load requests:', error);
-      Alert.alert(
-        'Error',
-        error?.response?.data?.message || error?.message || 'Failed to load chat requests. Please try again.'
-      );
-    }
+  const handleChatPress = useCallback(() => {
+    // Navigate directly to request list screen
+    // The SellerRequestListScreen will handle loading and empty state
+    (navigation as any).navigate('SellerRequestList', {
+      mobileId: mobileId,
+      mobileTitle: titleText,
+    });
   }, [mobileId, navigation, titleText]);
 
   // Cleanup on unmount

@@ -3,12 +3,12 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Alert, ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { RequestStatus } from '../types';
-import { updateRequestStatus, completeDeal } from '../api/chatApi';
+import { BookingStatus } from '@core/booking/types/booking.types';
+import { createBookingApi } from '@core/booking/api';
 
 interface StatusActionButtonsProps {
   requestId: number;
-  currentStatus: RequestStatus;
+  currentStatus: BookingStatus;
   onStatusUpdated: () => void;
 }
 
@@ -19,7 +19,10 @@ const StatusActionButtons: React.FC<StatusActionButtonsProps> = ({
 }) => {
   const [loading, setLoading] = useState(false);
 
-  const handleStatusUpdate = async (newStatus: 'IN_NEGOTIATION' | 'ACCEPTED' | 'REJECTED', action: string) => {
+  // Create mobile API instance
+  const mobileApi = createBookingApi('mobile');
+
+  const handleStatusUpdate = async (newStatus: BookingStatus, action: string) => {
     Alert.alert(
       `${action}?`,
       `Are you sure you want to ${action.toLowerCase()} this request?`,
@@ -30,11 +33,11 @@ const StatusActionButtons: React.FC<StatusActionButtonsProps> = ({
           onPress: async () => {
             try {
               setLoading(true);
-              await updateRequestStatus(requestId, newStatus);
+              await mobileApi.updateStatus(requestId, newStatus);
               Alert.alert('Success', `Request ${action.toLowerCase()}ed successfully`);
               onStatusUpdated();
             } catch (error: any) {
-              Alert.alert('Error', error?.errorMessage || `Failed to ${action.toLowerCase()} request`);
+              Alert.alert('Error', error?.message || `Failed to ${action.toLowerCase()} request`);
             } finally {
               setLoading(false);
             }
@@ -56,7 +59,7 @@ const StatusActionButtons: React.FC<StatusActionButtonsProps> = ({
             try {
               setLoading(true);
               console.log('[STATUS_BUTTONS] Completing deal for request:', requestId);
-              await completeDeal(requestId);
+              await mobileApi.approveBooking(requestId);
               console.log('[STATUS_BUTTONS] Deal completed successfully');
               Alert.alert(
                 'Deal Completed!',
@@ -70,7 +73,7 @@ const StatusActionButtons: React.FC<StatusActionButtonsProps> = ({
               );
             } catch (error: any) {
               console.error('[STATUS_BUTTONS] Error completing deal:', error);
-              Alert.alert('Error', error?.response?.data?.message || error?.message || 'Failed to complete deal');
+              Alert.alert('Error', error?.message || 'Failed to complete deal');
             } finally {
               setLoading(false);
             }
@@ -89,17 +92,17 @@ const StatusActionButtons: React.FC<StatusActionButtonsProps> = ({
     );
   }
 
-  // PENDING status
+  // PENDING status - Show Accept and Reject
   if (currentStatus === 'PENDING') {
     return (
       <View style={styles.container}>
         <TouchableOpacity
-          style={[styles.button, styles.primaryButton]}
-          onPress={() => handleStatusUpdate('IN_NEGOTIATION', 'Start Negotiation')}
+          style={[styles.button, styles.acceptButton]}
+          onPress={() => handleStatusUpdate('ACCEPTED', 'Accept')}
           activeOpacity={0.8}
         >
-          <Icon name="chat-processing" size={18} color="#FFFFFF" />
-          <Text style={styles.primaryButtonText}>Start Negotiation</Text>
+          <Icon name="check-circle" size={18} color="#FFFFFF" />
+          <Text style={styles.acceptButtonText}>Accept</Text>
         </TouchableOpacity>
 
         <TouchableOpacity

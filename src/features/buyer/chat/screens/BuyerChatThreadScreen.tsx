@@ -15,11 +15,12 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useAuth } from '@context/AuthContext';
-import { getChatRequestById, sendChatMessage } from '../api/chatApi';
-import { ChatRequest, ConversationMessage } from '../types';
+import { useBookingThread, useSendMessage } from '@core/booking/hooks';
+import { MobileEntity } from '@core/booking/types/entity.types';
+import { ConversationMessage } from '../types';
 import MessageBubble from '../components/MessageBubble';
 import ChatInput from '../components/ChatInput';
-import { getBuyerStatusConfig, isChatDisabled } from '@shared/utils/chatStatus';
+import { getBuyerStatusConfig, isChatDisabled } from '@core/booking/utils';
 
 interface RouteParams {
   requestId: number;
@@ -33,36 +34,20 @@ const BuyerChatThreadScreen = () => {
   const { requestId, mobileTitle, sellerId } = route.params as RouteParams;
   const { userId, buyerId } = useAuth();
 
-  const [chatRequest, setChatRequest] = useState<ChatRequest | null>(null);
-  const [messages, setMessages] = useState<ConversationMessage[]>([]);
-  const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
   const flatListRef = useRef<FlatList>(null);
 
-  // Load chat request
-  const loadChatRequest = useCallback(async () => {
-    try {
-      setError(null);
-      if (!buyerId) {
-        throw new Error('Buyer ID not found');
-      }
-      const data = await getChatRequestById(requestId, buyerId);
-      setChatRequest(data);
-      setMessages(data.conversation || []);
-    } catch (err: any) {
-      console.error('[CHAT_THREAD] Error loading chat request:', err);
-      setError(err?.errorMessage || err?.message || 'Failed to load chat. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  }, [requestId, buyerId]);
+  // Use generic booking hooks
+  const { booking, loading, error, refresh, updateBooking } = useBookingThread<MobileEntity>({
+    entityType: 'mobile',
+    bookingId: requestId,
+    contextId: buyerId || 0,
+    enabled: !!buyerId,
+  });
 
-  // Initial load
-  useEffect(() => {
-    loadChatRequest();
-  }, [loadChatRequest]);
+  const { sendMessage, sending } = useSendMessage<MobileEntity>('mobile');
+
+  const messages = booking?.conversation || [];
 
   // Scroll to bottom when messages change
   useEffect(() => {
@@ -71,12 +56,12 @@ const BuyerChatThreadScreen = () => {
         flatListRef.current?.scrollToEnd({ animated: true });
       }, 100);
     }
-  }, [messages]);
+  }, [messages.length]);
 
   // Refresh handler
   const onRefresh = async () => {
     setRefreshing(true);
-    await loadChatRequest();
+    await refresh();
     setRefreshing(false);
   };
 
@@ -88,13 +73,12 @@ const BuyerChatThreadScreen = () => {
     }
 
     try {
-      const updatedRequest = await sendChatMessage(requestId, userId, message);
-      setChatRequest(updatedRequest);
-      setMessages(updatedRequest.conversation || []);
+      const updatedBooking = await sendMessage(requestId, userId, message);
+      updateBooking(updatedBooking); // Update state directly without reload
     } catch (err: any) {
       console.error('[CHAT_THREAD] Error sending message:', err);
-      Alert.alert('Failed to send', err?.errorMessage || 'Please try again');
-      throw err; // Re-throw to let ChatInput handle loading state
+      Alert.alert('Failed to send', err?.message || 'Please try again');
+      throw err;
     }
   };
 
@@ -107,10 +91,10 @@ const BuyerChatThreadScreen = () => {
 
       <View style={styles.headerInfo}>
         <Text style={styles.headerTitle}>
-          {mobileTitle || `Mobile Request #${chatRequest?.mobileId || requestId}`}
+          {mobileTitle || `Mobile Request #${booking?.entityId || requestId}`}
         </Text>
         <Text style={styles.headerSubtitle}>
-          Seller ID: {sellerId || chatRequest?.sellerId || 'N/A'}
+          Seller ID: {sellerId || booking?.sellerId || 'N/A'}
         </Text>
       </View>
 
@@ -122,7 +106,8 @@ const BuyerChatThreadScreen = () => {
 
   // Render message item
   const renderMessage = ({ item, index }: { item: ConversationMessage; index: number }) => {
-    const isCurrentUser = item.senderType === 'BUYER';
+    // TEMPORARY FIX: Compare senderId with userId instead of relying on senderType
+    const isCurrentUser = item.senderId === userId;
     return <MessageBubble message={item} isCurrentUser={isCurrentUser} />;
   };
 
@@ -147,7 +132,7 @@ const BuyerChatThreadScreen = () => {
       </View>
       <Text style={styles.emptyTitle}>Something went wrong</Text>
       <Text style={styles.emptySubtitle}>{error}</Text>
-      <TouchableOpacity style={styles.retryButton} onPress={loadChatRequest}>
+      <TouchableOpacity style={styles.retryButton} onPress={refresh}>
         <Icon name="refresh" size={20} color="#FFFFFF" style={{ marginRight: 8 }} />
         <Text style={styles.retryButtonText}>Try Again</Text>
       </TouchableOpacity>
@@ -156,9 +141,9 @@ const BuyerChatThreadScreen = () => {
 
   // Render status badge
   const renderStatusBadge = () => {
-    if (!chatRequest) return null;
+    if (!booking) return null;
 
-    const config = getBuyerStatusConfig(chatRequest.status);
+    const config = getBuyerStatusConfig(booking.status);
 
     return (
       <View style={[styles.statusBanner, { backgroundColor: config.bgColor }]}>
@@ -184,7 +169,7 @@ const BuyerChatThreadScreen = () => {
   }
 
   // Error state
-  if (error && !chatRequest) {
+  if (error && !booking) {
     return (
       <SafeAreaView style={styles.container} edges={['top']}>
         {renderHeader()}
@@ -221,7 +206,7 @@ const BuyerChatThreadScreen = () => {
 
       <ChatInput
         onSend={handleSendMessage}
-        disabled={chatRequest ? isChatDisabled(chatRequest.status) : false}
+        disabled={booking ? isChatDisabled(booking.status) : false}
       />
     </SafeAreaView>
   );

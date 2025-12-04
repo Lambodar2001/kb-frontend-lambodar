@@ -1,0 +1,138 @@
+import api from '@shared/api/client';
+import { BookingApiAdapter } from './BookingApiAdapter';
+import { Booking, CreateBookingRequest, SendMessageRequest } from '../types/booking.types';
+import { EntityType } from '../types/entity.types';
+import { getEndpointConfig } from './endpoints.config';
+
+export function createBookingApi<TEntity = any>(
+  entityType: EntityType
+): BookingApiAdapter<TEntity> {
+  const endpoints = getEndpointConfig(entityType);
+
+  return {
+    entityType,
+
+    async createBooking(request: CreateBookingRequest): Promise<Booking<TEntity>> {
+      let payload: any = {};
+
+      // ========================================
+      // MOBILE BOOKING BLOCK
+      // ========================================
+      if (entityType === 'mobile') {
+        payload = {
+          mobileId: request.entityId,
+          buyerUserId: request.buyerUserId,
+          message: request.message,
+        };
+      }
+
+      // Future: Add car, bike, laptop booking payload here
+
+      const response = await api.post<any>(endpoints.createBooking, payload);
+      return normalizeBooking(response.data, entityType);
+    },
+
+    async getBuyerBookings(buyerId: number): Promise<Booking<TEntity>[]> {
+      const response = await api.get<any[]>(endpoints.getBuyerBookings(buyerId));
+      return response.data.map(b => normalizeBooking(b, entityType));
+    },
+
+    async getBookingById(bookingId: number, contextId: number): Promise<Booking<TEntity>> {
+      // ========================================
+      // MOBILE BOOKING BLOCK
+      // ========================================
+      // For mobile, try fetching from entity bookings first (seller side)
+      // then fallback to buyer bookings (buyer side)
+      try {
+        const entityBookings = await this.getEntityBookings(contextId);
+        const booking = entityBookings.find(b => b.bookingId === bookingId || b.requestId === bookingId);
+        if (booking) return booking;
+      } catch (error) {
+        // If entity bookings fail, try buyer bookings
+        console.log('[getBookingById] Entity bookings failed, trying buyer bookings');
+      }
+
+      // Fallback to buyer bookings
+      const buyerBookings = await this.getBuyerBookings(contextId);
+      const booking = buyerBookings.find(b => b.bookingId === bookingId || b.requestId === bookingId);
+      if (!booking) throw new Error(`Booking ${bookingId} not found`);
+      return booking;
+
+      // Future: Add car, bike, laptop getBookingById logic here
+    },
+
+    async getEntityBookings(entityId: number): Promise<Booking<TEntity>[]> {
+      const response = await api.get<any[]>(endpoints.getEntityBookings(entityId));
+      return response.data.map(b => normalizeBooking(b, entityType));
+    },
+
+    async getPendingBookings(sellerId?: number): Promise<Booking<TEntity>[]> {
+      const response = await api.get<any[]>(endpoints.getPendingBookings);
+      return response.data.map(b => normalizeBooking(b, entityType));
+    },
+
+    async sendMessage(request: SendMessageRequest): Promise<Booking<TEntity>> {
+      // ========================================
+      // MOBILE BOOKING BLOCK
+      // ========================================
+      const formData = new FormData();
+      formData.append('senderUserId', request.senderUserId.toString());
+      formData.append('message', request.message);
+
+      const response = await api.post<any>(
+        endpoints.sendMessage(request.bookingId),
+        formData,
+        { headers: { 'Content-Type': 'multipart/form-data' } }
+      );
+      return normalizeBooking(response.data, entityType);
+
+      // Future: Add car, bike, laptop sendMessage logic here
+    },
+
+    async updateStatus(bookingId: number, status: string): Promise<Booking<TEntity>> {
+      const response = await api.patch<any>(
+        endpoints.updateStatus(bookingId),
+        null,
+        { params: { status } }
+      );
+      return normalizeBooking(response.data, entityType);
+    },
+
+    async acceptBooking(bookingId: number): Promise<Booking<TEntity>> {
+      const response = await api.patch<any>(endpoints.acceptBooking(bookingId));
+      return normalizeBooking(response.data, entityType);
+    },
+
+    async rejectBooking(bookingId: number): Promise<Booking<TEntity>> {
+      const response = await api.patch<any>(endpoints.rejectBooking(bookingId));
+      return normalizeBooking(response.data, entityType);
+    },
+
+    async approveBooking(bookingId: number): Promise<Booking<TEntity>> {
+      const response = await api.post<any>(endpoints.approveBooking(bookingId));
+      return normalizeBooking(response.data, entityType);
+    },
+  };
+}
+
+// ========================================
+// MOBILE BOOKING BLOCK
+// ========================================
+function normalizeBooking<TEntity>(data: any, entityType: EntityType): Booking<TEntity> {
+  return {
+    bookingId: data.bookingId || data.requestId,
+    requestId: data.requestId,
+    entityId: data.mobileId, // Future: Add || data.carId || data.laptopId || data.bikeId
+    entityType,
+    buyerId: data.buyerId || data.buyerUserId,
+    sellerId: data.sellerId || data.sellerUserId,
+    status: data.status || data.bookingStatus,
+    createdAt: data.createdAt || new Date().toISOString(),
+    updatedAt: data.updatedAt || null,
+    conversation: data.conversation || [],
+    messageCount: data.messageCount,
+    lastMessage: data.lastMessage,
+    lastMessageTime: data.lastMessageTime,
+    entityData: data.mobile, // Future: Add || data.car || data.laptop || data.bike
+  };
+}

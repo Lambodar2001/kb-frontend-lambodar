@@ -12,6 +12,7 @@ module.exports = {
           '@assets': './src/assets',
           '@theme': './src/theme',
           '@context': './src/context',
+          '@core': './src/core',
         },
       },
     ],

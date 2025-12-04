@@ -1,6 +1,6 @@
 // src/features/seller/chat/screens/SellerRequestListScreen.tsx
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -13,8 +13,8 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { getMobileRequests } from '../api/chatApi';
-import { ChatRequest } from '../types';
+import { useEntityBookings } from '@core/booking/hooks';
+import { MobileEntity } from '@core/booking/types/entity.types';
 import BuyerRequestCard from '../components/BuyerRequestCard';
 
 interface RouteParams {
@@ -27,46 +27,23 @@ const SellerRequestListScreen = () => {
   const route = useRoute();
   const { mobileId, mobileTitle } = route.params as RouteParams;
 
-  const [requests, setRequests] = useState<ChatRequest[]>([]);
-  const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
-  // Load requests
-  const loadRequests = useCallback(async () => {
-    try {
-      setError(null);
-      const data = await getMobileRequests(mobileId);
-
-      // Sort by latest activity
-      const sorted = data.sort((a, b) => {
-        const aTime = a.updatedAt || a.createdAt;
-        const bTime = b.updatedAt || b.createdAt;
-        return new Date(bTime).getTime() - new Date(aTime).getTime();
-      });
-
-      setRequests(sorted);
-    } catch (err: any) {
-      console.error('[SELLER_REQUEST_LIST] Error loading requests:', err);
-      setError(err?.errorMessage || 'Failed to load requests. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  }, [mobileId]);
-
-  useEffect(() => {
-    loadRequests();
-  }, [loadRequests]);
+  // Use generic booking hook
+  const { bookings: requests, loading, error, refresh } = useEntityBookings<MobileEntity>({
+    entityType: 'mobile',
+    entityId: mobileId,
+  });
 
   const onRefresh = async () => {
     setRefreshing(true);
-    await loadRequests();
+    await refresh();
     setRefreshing(false);
   };
 
-  const handleRequestPress = (request: ChatRequest) => {
+  const handleRequestPress = (request: any) => {
     navigation.navigate('SellerChatThread' as never, {
-      requestId: request.requestId,
+      requestId: request.bookingId || request.requestId,
       buyerId: request.buyerId,
       mobileId: mobileId,
       mobileTitle: mobileTitle,
@@ -115,7 +92,7 @@ const SellerRequestListScreen = () => {
       </View>
       <Text style={styles.emptyTitle}>Something went wrong</Text>
       <Text style={styles.emptySubtitle}>{error}</Text>
-      <TouchableOpacity style={styles.retryButton} onPress={loadRequests}>
+      <TouchableOpacity style={styles.retryButton} onPress={refresh}>
         <Icon name="refresh" size={20} color="#FFFFFF" style={{ marginRight: 8 }} />
         <Text style={styles.retryButtonText}>Try Again</Text>
       </TouchableOpacity>
@@ -147,7 +124,7 @@ const SellerRequestListScreen = () => {
           renderItem={({ item }) => (
             <BuyerRequestCard request={item} onPress={() => handleRequestPress(item)} />
           )}
-          keyExtractor={(item) => item.requestId.toString()}
+          keyExtractor={(item) => (item.bookingId || item.requestId).toString()}
           contentContainerStyle={requests.length === 0 ? styles.emptyList : styles.listContent}
           ListEmptyComponent={renderEmptyState}
           refreshControl={

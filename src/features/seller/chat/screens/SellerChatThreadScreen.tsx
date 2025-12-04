@@ -1,6 +1,6 @@
 // src/features/seller/chat/screens/SellerChatThreadScreen.tsx
 
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -15,12 +15,14 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useAuth } from '@context/AuthContext';
-import { getChatRequestById, sendSellerMessage, updateRequestStatus } from '../api/chatApi';
-import { ChatRequest, ConversationMessage } from '../types';
+import { useBookingThread, useSendMessage } from '@core/booking/hooks';
+import { createBookingApi } from '@core/booking/api';
+import { MobileEntity } from '@core/booking/types/entity.types';
+import { ConversationMessage } from '@core/booking/types/booking.types';
 import MessageBubble from '../../../buyer/chat/components/MessageBubble';
 import ChatInput from '../../../buyer/chat/components/ChatInput';
 import StatusActionButtons from '../components/StatusActionButtons';
-import { getSellerStatusConfig, isChatDisabled } from '@shared/utils/chatStatus';
+import { getSellerStatusConfig, isChatDisabled } from '@core/booking/utils';
 
 interface RouteParams {
   requestId: number;
@@ -35,36 +37,19 @@ const SellerChatThreadScreen = () => {
   const { requestId, buyerId, mobileId, mobileTitle } = route.params as RouteParams;
   const { userId } = useAuth();
 
-  const [chatRequest, setChatRequest] = useState<ChatRequest | null>(null);
-  const [messages, setMessages] = useState<ConversationMessage[]>([]);
-  const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
   const flatListRef = useRef<FlatList>(null);
 
-  // Load chat request
-  const loadChatRequest = useCallback(async () => {
-    try {
-      setError(null);
-      if (!mobileId) {
-        throw new Error('Mobile ID not found');
-      }
-      const data = await getChatRequestById(requestId, mobileId);
-      setChatRequest(data);
-      setMessages(data.conversation || []);
-    } catch (err: any) {
-      console.error('[SELLER_CHAT_THREAD] Error loading chat request:', err);
-      setError(err?.errorMessage || err?.message || 'Failed to load chat. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  }, [requestId, mobileId]);
+  // Use generic booking hooks
+  const { booking, loading, error, refresh, updateBooking } = useBookingThread<MobileEntity>({
+    entityType: 'mobile',
+    bookingId: requestId,
+    contextId: mobileId || 0,
+    enabled: !!mobileId,
+  });
 
-  // Initial load
-  useEffect(() => {
-    loadChatRequest();
-  }, [loadChatRequest]);
+  const { sendMessage, sending } = useSendMessage<MobileEntity>('mobile');
+  const messages = booking?.conversation || [];
 
   // Scroll to bottom when messages change
   useEffect(() => {
@@ -78,7 +63,7 @@ const SellerChatThreadScreen = () => {
   // Refresh handler
   const onRefresh = async () => {
     setRefreshing(true);
-    await loadChatRequest();
+    await refresh();
     setRefreshing(false);
   };
 
@@ -90,25 +75,37 @@ const SellerChatThreadScreen = () => {
     }
 
     try {
-      // If status is PENDING, auto-change to IN_NEGOTIATION when seller sends first message
-      if (chatRequest?.status === 'PENDING') {
+      console.log('[SELLER_SEND_MESSAGE] Sending message:', {
+        requestId,
+        senderUserId: userId,
+        sellerId: booking?.sellerId,
+        buyerId: booking?.buyerId,
+        message: message.substring(0, 20),
+      });
+
+      // Auto-change status from PENDING to IN_NEGOTIATION when seller sends first message
+      if (booking?.status === 'PENDING') {
         console.log('[SELLER_CHAT] Auto-changing status from PENDING to IN_NEGOTIATION');
-        await updateRequestStatus(requestId, 'IN_NEGOTIATION');
+        const mobileApi = createBookingApi('mobile');
+        await mobileApi.updateStatus(requestId, 'IN_NEGOTIATION');
       }
 
-      const updatedRequest = await sendSellerMessage(requestId, userId, message);
-      setChatRequest(updatedRequest);
-      setMessages(updatedRequest.conversation || []);
+      const updatedBooking = await sendMessage(requestId, userId, message);
+      console.log('[SELLER_SEND_MESSAGE] Response received:', {
+        conversationLength: updatedBooking.conversation?.length,
+        lastMessage: updatedBooking.conversation?.[updatedBooking.conversation.length - 1],
+      });
+      updateBooking(updatedBooking); // Update state directly without reload
     } catch (err: any) {
       console.error('[SELLER_CHAT_THREAD] Error sending message:', err);
-      Alert.alert('Failed to send', err?.errorMessage || 'Please try again');
+      Alert.alert('Failed to send', err?.message || 'Please try again');
       throw err;
     }
   };
 
   // Status updated handler
   const handleStatusUpdated = () => {
-    loadChatRequest();
+    refresh();
   };
 
   // Render header
@@ -121,7 +118,7 @@ const SellerChatThreadScreen = () => {
       <View style={styles.headerInfo}>
         <Text style={styles.headerTitle}>Buyer #{buyerId}</Text>
         <Text style={styles.headerSubtitle}>
-          {mobileTitle || `Mobile Request #${chatRequest?.mobileId || requestId}`}
+          {mobileTitle || `Mobile Request #${booking?.entityId || requestId}`}
         </Text>
       </View>
 
@@ -133,7 +130,18 @@ const SellerChatThreadScreen = () => {
 
   // Render message item
   const renderMessage = ({ item }: { item: ConversationMessage }) => {
-    const isCurrentUser = item.senderType === 'SELLER';
+    // TEMPORARY FIX: Compare senderId with userId instead of relying on senderType
+    // because backend returns wrong senderType
+    const isCurrentUser = item.senderId === userId;
+
+    console.log('[SELLER_RENDER_MESSAGE]', {
+      message: item.message,
+      senderType: item.senderType,
+      senderId: item.senderId,
+      myUserId: userId,
+      isCurrentUser,
+      comparison: `${item.senderId} === ${userId} = ${isCurrentUser}`,
+    });
     return <MessageBubble message={item} isCurrentUser={isCurrentUser} />;
   };
 
@@ -158,7 +166,7 @@ const SellerChatThreadScreen = () => {
       </View>
       <Text style={styles.emptyTitle}>Something went wrong</Text>
       <Text style={styles.emptySubtitle}>{error}</Text>
-      <TouchableOpacity style={styles.retryButton} onPress={loadChatRequest}>
+      <TouchableOpacity style={styles.retryButton} onPress={refresh}>
         <Icon name="refresh" size={20} color="#FFFFFF" style={{ marginRight: 8 }} />
         <Text style={styles.retryButtonText}>Try Again</Text>
       </TouchableOpacity>
@@ -167,9 +175,9 @@ const SellerChatThreadScreen = () => {
 
   // Render status badge
   const renderStatusBadge = () => {
-    if (!chatRequest) return null;
+    if (!booking) return null;
 
-    const config = getSellerStatusConfig(chatRequest.status);
+    const config = getSellerStatusConfig(booking.status);
 
     return (
       <View style={[styles.statusBanner, { backgroundColor: config.bgColor }]}>
@@ -195,7 +203,7 @@ const SellerChatThreadScreen = () => {
   }
 
   // Error state
-  if (error && !chatRequest) {
+  if (error && !booking) {
     return (
       <SafeAreaView style={styles.container} edges={['top']}>
         {renderHeader()}
@@ -204,7 +212,7 @@ const SellerChatThreadScreen = () => {
     );
   }
 
-  const showInput = chatRequest ? !isChatDisabled(chatRequest.status) : false;
+  const showInput = booking ? !isChatDisabled(booking.status) : false;
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
@@ -232,10 +240,10 @@ const SellerChatThreadScreen = () => {
         onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: false })}
       />
 
-      {chatRequest && (
+      {booking && (
         <StatusActionButtons
           requestId={requestId}
-          currentStatus={chatRequest.status}
+          currentStatus={booking.status}
           onStatusUpdated={handleStatusUpdated}
         />
       )}
