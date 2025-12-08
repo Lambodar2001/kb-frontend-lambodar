@@ -108,7 +108,7 @@ const BuyerChatListScreen = () => {
   const handleChatPress = (request: any) => {
     navigation.navigate('BuyerChatThread' as never, {
       requestId: request.bookingId || request.requestId,
-      mobileTitle: `Mobile Request #${request.entityId}`,
+      mobileTitle: request.sellerName || `Seller #${request.sellerId}`,
       sellerId: request.sellerId,
     } as never);
   };
@@ -199,9 +199,8 @@ const BuyerChatListScreen = () => {
     <ChatRequestCard
       request={item}
       onPress={() => handleChatPress(item)}
-      mobileTitle={`Mobile Request #${item.entityId}`}
+      mobileTitle={item.sellerName || `Seller #${item.sellerId}`}
       // TODO: Add mobile details when API provides them
-      // mobileTitle={item.mobileTitle}
       // mobileImage={item.mobileImage}
       // mobilePrice={item.mobilePrice}
     />

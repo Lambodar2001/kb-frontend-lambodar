@@ -22,7 +22,8 @@ import {
 } from '../api/catalogApi';
 
 const { width } = Dimensions.get('window');
-const CARD_WIDTH = (width - 48) / 2;
+// container horizontal padding = 16, gap between cards = 12
+const CARD_WIDTH = (width - 32 - 12) / 2;
 
 interface CatalogItemCardProps<T extends BaseEntity> {
   entity: T;
@@ -40,7 +41,6 @@ export function CatalogItemCard<T extends BaseEntity>({
   const price = getEntityPrice(entity, config);
   const title = getEntityTitle(entity, config);
 
-  // Extract additional info from entity
   const brand = (entity as any).brand;
   const model = (entity as any).model;
   const condition = entity.condition;
@@ -49,15 +49,16 @@ export function CatalogItemCard<T extends BaseEntity>({
     <TouchableOpacity
       style={[styles.card, { width: CARD_WIDTH }]}
       onPress={onPress}
-      activeOpacity={0.7}>
+      activeOpacity={0.85}>
       <View style={styles.imageContainer}>
         {imageUrl ? (
           <Image source={{ uri: imageUrl }} style={styles.image} />
         ) : (
           <View style={[styles.image, styles.placeholderContainer]}>
-            <Icon name={config.icon} size={40} color="#CBD5E1" />
+            <Icon name={config.icon} size={42} color="#CBD5E1" />
           </View>
         )}
+
         {condition && (
           <View style={styles.conditionBadge}>
             <Text style={styles.conditionText}>{condition}</Text>
@@ -66,7 +67,7 @@ export function CatalogItemCard<T extends BaseEntity>({
       </View>
 
       <View style={styles.infoContainer}>
-        <Text style={styles.price}>
+        <Text style={styles.price} numberOfLines={1}>
           ₹{price.toLocaleString('en-IN')}
         </Text>
 
@@ -76,7 +77,7 @@ export function CatalogItemCard<T extends BaseEntity>({
 
         {(brand || model) && (
           <View style={styles.detailsRow}>
-            <Icon name={config.icon} size={14} color="#64748B" />
+            <Icon name={config.icon} size={14} color="#94A3B8" />
             <Text style={styles.detailsText} numberOfLines={1}>
               {[brand, model].filter(Boolean).join(' ')}
             </Text>
@@ -90,20 +91,21 @@ export function CatalogItemCard<T extends BaseEntity>({
 const styles = StyleSheet.create({
   card: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    marginBottom: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    borderRadius: 18,
     overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.06,
+    shadowRadius: 8,
+    elevation: 3,
   },
   imageContainer: {
     position: 'relative',
     width: '100%',
-    height: 140,
-    backgroundColor: '#F1F5F9',
+    height: 150,
+    backgroundColor: '#F3F4F6',
   },
   image: {
     width: '100%',
@@ -113,46 +115,48 @@ const styles = StyleSheet.create({
   placeholderContainer: {
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F1F5F9',
   },
   conditionBadge: {
     position: 'absolute',
-    top: 8,
-    right: 8,
+    top: 10,
+    left: 10,
     backgroundColor: '#22C55E',
-    paddingHorizontal: 8,
+    paddingHorizontal: 10,
     paddingVertical: 4,
-    borderRadius: 6,
+    borderRadius: 999,
   },
   conditionText: {
     color: '#FFFFFF',
     fontSize: 10,
-    fontWeight: '600',
+    fontWeight: '700',
+    letterSpacing: 0.3,
+    textTransform: 'uppercase',
   },
   infoContainer: {
-    padding: 12,
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    gap: 4,
   },
   price: {
     fontSize: 16,
     fontWeight: '700',
     color: '#0F5E87',
-    marginBottom: 4,
   },
   title: {
     fontSize: 13,
     fontWeight: '500',
     color: '#0F172A',
-    marginBottom: 6,
     lineHeight: 18,
   },
   detailsRow: {
     flexDirection: 'row',
     alignItems: 'center',
+    marginTop: 4,
     gap: 4,
   },
   detailsText: {
     fontSize: 12,
-    color: '#64748B',
+    color: '#6B7280',
     flex: 1,
   },
 });

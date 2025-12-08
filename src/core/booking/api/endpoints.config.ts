@@ -30,7 +30,23 @@ const ENDPOINT_CONFIGS: Record<EntityType, EndpointConfig> = {
     approveBooking: (bookingId) => `/api/v1/mobile/requests/${bookingId}/complete`,
   },
 
-  // Future: Add car, bike, laptop endpoints here
+  // ========================================
+  // CAR BOOKING BLOCK
+  // ========================================
+  car: {
+    createBooking: '/api/carBookings/createBooking',
+    getBuyerBookings: (buyerId) => `/api/carBookings/buyer/${buyerId}`,
+    getBookingById: (bookingId) => `/api/carBookings/${bookingId}`,
+    getEntityBookings: (carId) => `/api/carBookings/car/${carId}`,
+    getPendingBookings: '/api/carBookings/pending',
+    sendMessage: (bookingId) => `/api/carBookings/${bookingId}/message`,
+    updateStatus: (bookingId) => `/api/carBookings/${bookingId}/status`,
+    acceptBooking: (bookingId) => `/api/carBookings/${bookingId}/accept`,
+    rejectBooking: (bookingId) => `/api/carBookings/${bookingId}/reject`,
+    approveBooking: (bookingId) => `/api/carBookings/${bookingId}/complete`,
+  },
+
+  // Future: Add bike, laptop endpoints here
 };
 
 export function getEndpointConfig(entityType: EntityType): EndpointConfig {

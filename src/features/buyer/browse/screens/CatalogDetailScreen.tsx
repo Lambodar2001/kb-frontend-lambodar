@@ -28,6 +28,7 @@ import {
 } from '../api/catalogApi';
 import ChatRequestModal from '../../chat/components/ChatRequestModal';
 import { useCreateBooking } from '@core/booking/hooks/useCreateBooking';
+import { useBookingList } from '@core/booking/hooks/useBookingList';
 import { useAuth } from '@context/AuthContext';
 
 const { width } = Dimensions.get('window');
@@ -48,10 +49,11 @@ export function CatalogDetailScreen<T extends BaseEntity>({
   const route = useRoute<RouteProp<Record<string, RouteParams>, string>>();
   const { entityId } = route.params;
 
-  const { userId } = useAuth();
+  const { userId, buyerId } = useAuth();
   const { createBooking, loading: creatingBooking } = useCreateBooking<T>(
     config.type as any
   );
+
 
   const [entity, setEntity] = useState<T | null>(null);
   const [loading, setLoading] = useState(true);
@@ -60,6 +62,7 @@ export function CatalogDetailScreen<T extends BaseEntity>({
   const [chatModalVisible, setChatModalVisible] = useState(false);
 
   const scrollViewRef = useRef<ScrollView>(null);
+  const isCreatingRef = useRef(false);
 
   const loadEntityDetails = useCallback(async () => {
     try {
@@ -89,12 +92,13 @@ export function CatalogDetailScreen<T extends BaseEntity>({
   );
 
   const handleChatPress = useCallback(() => {
-    if (!userId) {
+    const bookingUserId = config.type === 'car' ? buyerId : userId;
+    if (!bookingUserId) {
       Alert.alert('Error', 'Please log in to send a message');
       return;
     }
     setChatModalVisible(true);
-  }, [userId]);
+  }, [userId, buyerId, config.type]);
 
   const handleMakeOfferPress = useCallback(() => {
     Alert.alert(
@@ -106,28 +110,52 @@ export function CatalogDetailScreen<T extends BaseEntity>({
 
   const handleChatSubmit = useCallback(
     async (message: string) => {
-      if (!userId || !entity) {
+      // Prevent double submission
+      if (isCreatingRef.current) {
+        return;
+      }
+
+      // For car bookings, use buyerId; for mobile, use userId
+      const bookingUserId = config.type === 'car' ? buyerId : userId;
+
+      if (!bookingUserId || !entity) {
         Alert.alert('Error', 'Unable to send message');
         return;
       }
 
+      isCreatingRef.current = true;
+
       try {
-        const response = await createBooking(entityId, userId, message);
+        await createBooking(entityId, bookingUserId, message);
 
         setChatModalVisible(false);
 
-        navigation.navigate('Chat' as never);
-        setTimeout(() => {
-          navigation.navigate('BuyerChatThread' as never, {
-            requestId: response.bookingId || response.requestId,
-          } as never);
-        }, 100);
-      } catch (error) {
-        console.error('Error creating chat:', error);
-        Alert.alert('Error', 'Failed to send message. Please try again.');
+        Alert.alert(
+          'Success',
+          'Your request has been sent successfully! You can view it in the Chat tab.',
+          [{ text: 'OK' }]
+        );
+      } catch (error: any) {
+        // Handle duplicate request error gracefully
+        const isDuplicateError =
+          error?.response?.data?.errorMessage?.includes('already sent a request') ||
+          error?.response?.data?.errorCode === 'BIKE_OPERATION_FAILED';
+
+        if (isDuplicateError) {
+          setChatModalVisible(false);
+          Alert.alert(
+            'Already Requested',
+            'You have already sent a request for this item. Please check your Chat tab.',
+            [{ text: 'OK' }]
+          );
+        } else {
+          Alert.alert('Error', 'Failed to send message. Please try again.');
+        }
+      } finally {
+        isCreatingRef.current = false;
       }
     },
-    [userId, entity, entityId, createBooking, navigation]
+    [userId, buyerId, entity, entityId, createBooking, config.type]
   );
 
   if (loading) {

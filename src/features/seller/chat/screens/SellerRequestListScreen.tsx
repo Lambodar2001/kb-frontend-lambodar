@@ -45,6 +45,7 @@ const SellerRequestListScreen = () => {
     navigation.navigate('SellerChatThread' as never, {
       requestId: request.bookingId || request.requestId,
       buyerId: request.buyerId,
+      buyerName: request.buyerName,
       mobileId: mobileId,
       mobileTitle: mobileTitle,
     } as never);

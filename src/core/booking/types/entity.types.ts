@@ -1,4 +1,4 @@
-export type EntityType = 'mobile'; // Future: Add | 'car' | 'laptop' | 'bike'
+export type EntityType = 'mobile' | 'car'; // Future: Add | 'laptop' | 'bike'
 
 export interface BookableEntity {
   id: number;
@@ -25,4 +25,20 @@ export interface MobileEntity extends BookableEntity {
   userId: number;
 }
 
-// Future: Add car, bike, laptop entity interfaces here
+// ========================================
+// CAR BOOKING BLOCK
+// ========================================
+export interface CarEntity extends BookableEntity {
+  carId: number;
+  brand: string;
+  model: string;
+  condition: string;
+  year: number;
+  color: string;
+  description: string;
+  isNegotiable: boolean;
+  images: string[];
+  userId: number;
+}
+
+// Future: Add bike, laptop entity interfaces here

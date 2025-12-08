@@ -34,7 +34,7 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({ message, isCurrentUser })
         {/* Sender label for other user */}
         {!isCurrentUser && (
           <Text style={styles.senderLabel}>
-            {message.senderType === 'SELLER' ? 'Seller' : 'Buyer'}
+            {message.senderName}
           </Text>
         )}
 

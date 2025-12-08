@@ -40,9 +40,23 @@ export const useProfile = (): UseProfileReturn => {
       }
 
       setProfile(userData);
-    } catch (err) {
+    } catch (err: any) {
       console.error('Failed to fetch profile:', err);
-      setError('Failed to load profile information');
+
+      // Handle specific error types
+      if (err?.isNetworkError) {
+        setError('No internet connection. Please check your network and try again.');
+      } else if (err?.isTimeout) {
+        setError('Request timed out. Please try again.');
+      } else if (err?.statusCode === 404) {
+        setError('Profile not found.');
+      } else if (err?.statusCode === 500) {
+        setError('Server error. Please try again later.');
+      } else if (err?.errorMessage) {
+        setError(err.errorMessage);
+      } else {
+        setError('Failed to load profile information. Please try again.');
+      }
     } finally {
       setLoading(false);
     }

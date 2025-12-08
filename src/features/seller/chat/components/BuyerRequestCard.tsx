@@ -47,9 +47,9 @@ const BuyerRequestCard: React.FC<BuyerRequestCardProps> = ({ request, onPress })
 
         {/* Content */}
         <View style={styles.content}>
-          {/* Header: Buyer ID and Time */}
+          {/* Header: Buyer Name and Time */}
           <View style={styles.header}>
-            <Text style={styles.buyerName}>Buyer #{request.buyerId}</Text>
+            <Text style={styles.buyerName}>{request.buyerName || `Buyer #${request.buyerId}`}</Text>
             <Text style={styles.time}>
               {lastMessage ? formatTime(lastMessage.timestamp) : formatTime(request.createdAt)}
             </Text>

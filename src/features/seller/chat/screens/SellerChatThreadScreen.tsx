@@ -27,6 +27,7 @@ import { getSellerStatusConfig, isChatDisabled } from '@core/booking/utils';
 interface RouteParams {
   requestId: number;
   buyerId: number;
+  buyerName?: string;
   mobileId?: number;
   mobileTitle?: string;
 }
@@ -34,7 +35,7 @@ interface RouteParams {
 const SellerChatThreadScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const { requestId, buyerId, mobileId, mobileTitle } = route.params as RouteParams;
+  const { requestId, buyerId, buyerName, mobileId, mobileTitle } = route.params as RouteParams;
   const { userId } = useAuth();
 
   const [refreshing, setRefreshing] = useState(false);
@@ -116,7 +117,9 @@ const SellerChatThreadScreen = () => {
       </TouchableOpacity>
 
       <View style={styles.headerInfo}>
-        <Text style={styles.headerTitle}>Buyer #{buyerId}</Text>
+        <Text style={styles.headerTitle}>
+          {booking?.buyerName || `Buyer #${buyerId}`}
+        </Text>
         <Text style={styles.headerSubtitle}>
           {mobileTitle || `Mobile Request #${booking?.entityId || requestId}`}
         </Text>
@@ -130,18 +133,7 @@ const SellerChatThreadScreen = () => {
 
   // Render message item
   const renderMessage = ({ item }: { item: ConversationMessage }) => {
-    // TEMPORARY FIX: Compare senderId with userId instead of relying on senderType
-    // because backend returns wrong senderType
-    const isCurrentUser = item.senderId === userId;
-
-    console.log('[SELLER_RENDER_MESSAGE]', {
-      message: item.message,
-      senderType: item.senderType,
-      senderId: item.senderId,
-      myUserId: userId,
-      isCurrentUser,
-      comparison: `${item.senderId} === ${userId} = ${isCurrentUser}`,
-    });
+    const isCurrentUser = item.senderType === 'SELLER';
     return <MessageBubble message={item} isCurrentUser={isCurrentUser} />;
   };
 

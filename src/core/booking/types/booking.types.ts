@@ -16,6 +16,7 @@ export interface BookingMessage {
   senderType: SenderType;
   message: string;
   timestamp: string;
+  senderName: string;
 }
 
 export interface Booking<TEntity = any> {
@@ -25,6 +26,8 @@ export interface Booking<TEntity = any> {
   entityType: EntityType;
   buyerId: number;
   sellerId: number;
+  buyerName: string;
+  sellerName: string;
   status: BookingStatus;
   createdAt: string;
   updatedAt: string | null;

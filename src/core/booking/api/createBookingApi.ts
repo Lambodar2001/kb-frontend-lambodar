@@ -26,7 +26,18 @@ export function createBookingApi<TEntity = any>(
         };
       }
 
-      // Future: Add car, bike, laptop booking payload here
+      // ========================================
+      // CAR BOOKING BLOCK
+      // ========================================
+      if (entityType === 'car') {
+        payload = {
+          buyerId: request.buyerUserId,
+          carId: request.entityId,
+          message: request.message,
+        };
+      }
+
+      // Future: Add bike, laptop booking payload here
 
       const response = await api.post<any>(endpoints.createBooking, payload);
       return normalizeBooking(response.data, entityType);
@@ -34,6 +45,9 @@ export function createBookingApi<TEntity = any>(
 
     async getBuyerBookings(buyerId: number): Promise<Booking<TEntity>[]> {
       const response = await api.get<any[]>(endpoints.getBuyerBookings(buyerId));
+      if (!response.data) {
+        return [];
+      }
       return response.data.map(b => normalizeBooking(b, entityType));
     },
 
@@ -122,10 +136,12 @@ function normalizeBooking<TEntity>(data: any, entityType: EntityType): Booking<T
   return {
     bookingId: data.bookingId || data.requestId,
     requestId: data.requestId,
-    entityId: data.mobileId, // Future: Add || data.carId || data.laptopId || data.bikeId
+    entityId: data.mobileId || data.carId, // Future: Add || data.laptopId || data.bikeId
     entityType,
     buyerId: data.buyerId || data.buyerUserId,
     sellerId: data.sellerId || data.sellerUserId,
+    buyerName: data.buyerName,
+    sellerName: data.sellerName,
     status: data.status || data.bookingStatus,
     createdAt: data.createdAt || new Date().toISOString(),
     updatedAt: data.updatedAt || null,
@@ -133,6 +149,6 @@ function normalizeBooking<TEntity>(data: any, entityType: EntityType): Booking<T
     messageCount: data.messageCount,
     lastMessage: data.lastMessage,
     lastMessageTime: data.lastMessageTime,
-    entityData: data.mobile, // Future: Add || data.car || data.laptop || data.bike
+    entityData: data.mobile || data.car, // Future: Add || data.laptop || data.bike
   };
 }

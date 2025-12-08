@@ -14,7 +14,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { EntityConfig, BaseEntity } from '../config/entityTypes';
 import { getAllEntities, getEntityId } from '../api/catalogApi';
@@ -92,38 +92,49 @@ export function CatalogListScreen<T extends BaseEntity>({
   );
 
   const renderHeader = () => (
-    <View style={styles.header}>
-      <TouchableOpacity
-        style={styles.backButton}
-        onPress={() => navigation.goBack()}>
-        <Icon name="arrow-left" size={24} color="#0F172A" />
-      </TouchableOpacity>
-      <Text style={styles.headerTitle}>{config.displayNamePlural}</Text>
-      <TouchableOpacity style={styles.searchButton}>
-        <Icon name="magnify" size={24} color="#0F172A" />
-      </TouchableOpacity>
+    <View style={styles.headerWrapper}>
+      <View style={styles.header}>
+        <TouchableOpacity
+          style={styles.headerIconButton}
+          onPress={() => navigation.goBack()}>
+          <Icon name="arrow-left" size={22} color="#0F172A" />
+        </TouchableOpacity>
+
+        <View style={styles.headerTitleWrapper}>
+          <Text style={styles.headerTitle}>{config.displayNamePlural}</Text>
+          <Text style={styles.headerSubtitle}>Browse latest listings</Text>
+        </View>
+
+        <TouchableOpacity style={styles.headerIconButton}>
+          <Icon name="magnify" size={22} color="#0F172A" />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 
   const renderEmptyState = () => (
     <View style={styles.emptyContainer}>
-      <Icon name={config.icon} size={64} color="#CBD5E1" />
+      <View style={styles.emptyIconWrapper}>
+        <Icon name={config.icon} size={40} color="#94A3B8" />
+      </View>
       <Text style={styles.emptyTitle}>
-        No {config.displayNamePlural} Available
+        No {config.displayNamePlural} available
       </Text>
       <Text style={styles.emptySubtitle}>
-        Check back later for new listings
+        New listings will appear here as soon as they are added.
       </Text>
     </View>
   );
 
   const renderErrorState = () => (
     <View style={styles.errorContainer}>
-      <Icon name="alert-circle" size={64} color="#EF4444" />
-      <Text style={styles.errorTitle}>Oops! Something went wrong</Text>
+      <View style={styles.errorIconWrapper}>
+        <Icon name="alert-circle" size={40} color="#DC2626" />
+      </View>
+      <Text style={styles.errorTitle}>Something went wrong</Text>
       <Text style={styles.errorMessage}>{error}</Text>
       <TouchableOpacity style={styles.retryButton} onPress={() => loadEntities()}>
-        <Text style={styles.retryButtonText}>Try Again</Text>
+        <Text style={styles.retryButtonText}>Try again</Text>
       </TouchableOpacity>
     </View>
   );
@@ -178,96 +189,141 @@ export function CatalogListScreen<T extends BaseEntity>({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F7F8F9',
+    backgroundColor: '#F3F4F6',
+  },
+
+  // HEADER
+  headerWrapper: {
+    paddingHorizontal: 16,
+    paddingTop: 8,
+    paddingBottom: 4,
+    backgroundColor: '#F3F4F6',
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
     backgroundColor: '#FFFFFF',
-    borderBottomWidth: 1,
-    borderBottomColor: '#E5E7EB',
+    borderRadius: 18,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
+    elevation: 4,
   },
-  backButton: {
-    padding: 8,
+  headerIconButton: {
+    width: 34,
+    height: 34,
+    borderRadius: 999,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  headerTitleWrapper: {
+    flex: 1,
+    paddingHorizontal: 6,
   },
   headerTitle: {
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: '700',
     color: '#0F172A',
-    flex: 1,
-    textAlign: 'center',
   },
-  searchButton: {
-    padding: 8,
+  headerSubtitle: {
+    marginTop: 2,
+    fontSize: 12,
+    color: '#64748B',
   },
+
+  // LIST
   listContent: {
-    padding: 16,
+    paddingHorizontal: 16,
+    paddingTop: 12,
+    paddingBottom: 24,
     flexGrow: 1,
   },
   row: {
     justifyContent: 'space-between',
-    paddingHorizontal: 6,
+    marginBottom: 16,
   },
+
+  // STATES
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingVertical: 32,
+    paddingHorizontal: 32,
   },
   loadingText: {
     marginTop: 16,
-    fontSize: 16,
+    fontSize: 15,
     color: '#64748B',
   },
+
   emptyContainer: {
     flex: 1,
+    alignItems: 'center',
+    paddingTop: 80,
+    paddingHorizontal: 32,
+  },
+  emptyIconWrapper: {
+    width: 72,
+    height: 72,
+    borderRadius: 999,
+    backgroundColor: '#E5E7EB',
     justifyContent: 'center',
     alignItems: 'center',
-    paddingVertical: 64,
+    marginBottom: 16,
   },
   emptyTitle: {
-    marginTop: 16,
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '600',
     color: '#0F172A',
+    textAlign: 'center',
   },
   emptySubtitle: {
     marginTop: 8,
-    fontSize: 14,
-    color: '#64748B',
+    fontSize: 13,
+    color: '#6B7280',
     textAlign: 'center',
+    lineHeight: 18,
   },
+
   errorContainer: {
     flex: 1,
+    alignItems: 'center',
+    paddingTop: 80,
+    paddingHorizontal: 32,
+  },
+  errorIconWrapper: {
+    width: 72,
+    height: 72,
+    borderRadius: 999,
+    backgroundColor: '#FEE2E2',
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 32,
-    paddingVertical: 64,
   },
   errorTitle: {
     marginTop: 16,
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '600',
     color: '#0F172A',
   },
   errorMessage: {
     marginTop: 8,
-    fontSize: 14,
-    color: '#64748B',
+    fontSize: 13,
+    color: '#6B7280',
     textAlign: 'center',
+    lineHeight: 18,
   },
   retryButton: {
-    marginTop: 24,
-    paddingHorizontal: 32,
-    paddingVertical: 12,
+    marginTop: 20,
+    paddingHorizontal: 28,
+    paddingVertical: 10,
     backgroundColor: '#0F5E87',
-    borderRadius: 8,
+    borderRadius: 999,
   },
   retryButtonText: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '600',
     color: '#FFFFFF',
   },

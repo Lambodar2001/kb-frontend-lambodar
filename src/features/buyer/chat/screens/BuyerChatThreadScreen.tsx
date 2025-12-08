@@ -94,7 +94,7 @@ const BuyerChatThreadScreen = () => {
           {mobileTitle || `Mobile Request #${booking?.entityId || requestId}`}
         </Text>
         <Text style={styles.headerSubtitle}>
-          Seller ID: {sellerId || booking?.sellerId || 'N/A'}
+          {booking?.sellerName || `Seller ID: ${sellerId || booking?.sellerId || 'N/A'}`}
         </Text>
       </View>
 
@@ -106,8 +106,7 @@ const BuyerChatThreadScreen = () => {
 
   // Render message item
   const renderMessage = ({ item, index }: { item: ConversationMessage; index: number }) => {
-    // TEMPORARY FIX: Compare senderId with userId instead of relying on senderType
-    const isCurrentUser = item.senderId === userId;
+    const isCurrentUser = item.senderType === 'BUYER';
     return <MessageBubble message={item} isCurrentUser={isCurrentUser} />;
   };
 
