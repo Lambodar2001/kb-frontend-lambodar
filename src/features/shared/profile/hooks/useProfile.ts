@@ -41,15 +41,21 @@ export const useProfile = (): UseProfileReturn => {
 
       setProfile(userData);
     } catch (err: any) {
-      console.error('Failed to fetch profile:', err);
+      // Log error in a cleaner format
+      const errorMessage = err?.errorMessage || err?.message || 'Unknown error';
+      console.warn('Profile fetch failed:', errorMessage);
 
-      // Handle specific error types
+      // Handle specific error types gracefully
       if (err?.isNetworkError) {
         setError('No internet connection. Please check your network and try again.');
       } else if (err?.isTimeout) {
         setError('Request timed out. Please try again.');
-      } else if (err?.statusCode === 404) {
-        setError('Profile not found.');
+      } else if (err?.statusCode === 404 || err?.status === 404) {
+        // Handle 404 gracefully - user profile may not be set up yet
+        const role = roles.includes('SELLER') ? 'seller' : 'buyer';
+        setError(`Your ${role} profile hasn't been set up yet. Please complete your profile setup.`);
+        // Don't treat this as a critical error - set profile to null gracefully
+        setProfile(null);
       } else if (err?.statusCode === 500) {
         setError('Server error. Please try again later.');
       } else if (err?.errorMessage) {
